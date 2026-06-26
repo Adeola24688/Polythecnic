@@ -1,0 +1,26 @@
+# Dependencies
+StudentPortal/node_modules/
+
+# Angular build/cache output
+StudentPortal/dist/
+StudentPortal/.angular/
+
+# .NET build output
+StudentPortalAPI/bin/
+StudentPortalAPI/obj/
+
+# Local environment files and secrets
+.env
+*.env
+!*.env.example
+StudentPortalAPI/appsettings.Development.json
+
+# IDE/editor files
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db

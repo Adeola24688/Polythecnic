@@ -1,0 +1,113 @@
+<div class="registration-container">
+  <div class="page-header">
+    <h1 class="page-title">Course Registration</h1>
+    <p class="text-muted">Register courses for the current semester (Maximum 24 credits)</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+  }
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <div class="grid-2">
+    <!-- Available Courses Selection -->
+    <div class="card">
+      <h2 class="card-title">📝 Available Courses</h2>
+      <p class="text-muted mb-2">Check the boxes next to the courses you wish to register.</p>
+
+      @if (loadingAvailable()) {
+        <div class="skeleton" style="height: 200px; border-radius: 8px"></div>
+      } @else if (availableCourses().length === 0) {
+        <div class="empty-state">No available courses found for your department and level.</div>
+      } @else {
+        <div class="courses-list">
+          @for (course of availableCourses(); track course.id) {
+            <div class="course-selection-item" [class.selected]="isCourseSelected(course.id)">
+              <div class="selection-checkbox">
+                <input
+                  type="checkbox"
+                  [id]="'course-' + course.id"
+                  [checked]="isCourseSelected(course.id)"
+                  (change)="toggleCourseSelection(course)"
+                />
+              </div>
+              <label [for]="'course-' + course.id" class="course-selection-label">
+                <span class="course-code">{{ course.courseCode }}</span>
+                <span class="course-title">{{ course.courseTitle }}</span>
+                <span class="course-unit">{{ course.creditUnit }} Units</span>
+              </label>
+            </div>
+          }
+        </div>
+
+        <div class="registration-summary mt-2">
+          <div class="summary-row">
+            <span>Selected Credit Units:</span>
+            <strong [class.text-danger]="selectedCredits() > 24"
+              >{{ selectedCredits() }} / 24 Units</strong
+            >
+          </div>
+          <button
+            class="btn btn-primary btn-block mt-1"
+            [disabled]="selectedCredits() === 0 || selectedCredits() > 24 || registering()"
+            (click)="registerSelectedCourses()"
+          >
+            @if (registering()) {
+              Registering...
+            } @else {
+              Register Selected Courses
+            }
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Registered Courses List -->
+    <div class="card">
+      <h2 class="card-title">✅ Registered Courses</h2>
+      <p class="text-muted mb-2">Courses registered for the current semester.</p>
+
+      @if (loadingRegistered()) {
+        <div class="skeleton" style="height: 200px; border-radius: 8px"></div>
+      } @else if (registeredRegistrations().length === 0) {
+        <div class="empty-state">You have not registered any courses for this semester yet.</div>
+      } @else {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Title</th>
+                <th>Units</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (reg of registeredRegistrations(); track reg.id) {
+                <tr>
+                  <td>
+                    <strong class="text-primary">{{ reg.courseCode }}</strong>
+                  </td>
+                  <td>{{ reg.courseTitle }}</td>
+                  <td>{{ reg.creditUnit }}</td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="unregisterCourse(reg.id)">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="total-units-footer mt-2">
+          <span>Total Registered Credit Units:</span>
+          <strong>{{ totalRegisteredCredits() }} Units</strong>
+        </div>
+      }
+    </div>
+  </div>
+</div>

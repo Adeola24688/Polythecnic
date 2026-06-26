@@ -1,0 +1,78 @@
+.card-pay-cta {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  grid-column: span 2;
+}
+
+.card-pay-cta .card-title {
+  color: white;
+}
+
+.cta-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cta-label {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.cta-amount {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.btn-pay-now {
+  background-color: #ef4444;
+  color: white;
+  font-weight: 700;
+  padding: 0.85rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-pay-now:hover {
+  background-color: #dc2626;
+}
+
+.btn-pay-now:disabled {
+  background-color: #64748b;
+  cursor: not-allowed;
+}
+
+/* Info card status */
+.info-card-status {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info-card-status h3 {
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.support-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.ref-code {
+  font-family: monospace;
+  background-color: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}

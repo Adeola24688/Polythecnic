@@ -1,0 +1,124 @@
+<div class="login-wrapper">
+  <!-- Info Column (Right-side in screenshot, let's place it left or right depending on viewport) -->
+  <div class="info-sidebar">
+    <div class="info-sidebar-content">
+      <div class="school-logo-lg">
+        <img
+          src="https://student.safpoly.org/images/logo.png"
+          alt="SAF Polytechnic Logo"
+          onerror="this.src = 'https://i.ibb.co/1n5bWb7/safpoly.png'"
+        />
+      </div>
+      <h1 class="school-title">SAF POLYTECHNIC, ISEYIN.</h1>
+      <p class="school-subtitle">Km.7, Iseyin-Oyo Road, Idi-Ori, Iseyin. Oyo State.</p>
+
+      <div class="info-block success-accent">
+        <h3>Important information</h3>
+        <p>
+          You are to log in with your registered email and password. If you are a new student kindly
+          visit the ADMISSION PORTAL to Apply for your Program, you can click the link below to
+          register.
+        </p>
+        <button class="btn-click-here">Click here!</button>
+      </div>
+
+      <div class="info-block warning-accent">
+        <h3>Important information for old students</h3>
+        <p>
+          If you are an old student (2020/2021 session only). Kindly register on the new Admission
+          Portal, kindly provide all your credentials first and then click the button below for
+          Profiling and continue your registration.
+        </p>
+        <button class="btn-click-here">Click here!</button>
+      </div>
+
+      <div class="info-block danger-accent">
+        <h3>Course Registration</h3>
+        <p>Login to your account, provide a valid PIN and follow other processes.</p>
+      </div>
+
+      <div class="info-footer">Powered by Softmind Tech</div>
+    </div>
+  </div>
+
+  <!-- Form Column -->
+  <div class="form-container">
+    <div class="login-card">
+      <div class="card-logo">
+        <img
+          src="https://student.safpoly.org/images/logo.png"
+          alt="SAF Polytechnic Logo"
+          onerror="this.src = 'https://i.ibb.co/1n5bWb7/safpoly.png'"
+        />
+      </div>
+
+      <h2 class="portal-title">STUDENT PORTAL</h2>
+      <p class="portal-subtitle">Sign in to your account</p>
+
+      @if (errorMessage()) {
+        <div class="login-error">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form (submit)="onSubmit($event)">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control"
+            placeholder="Enter your email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="password-input-wrapper">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="Enter your password"
+              [value]="password()"
+              (input)="password.set($any($event.target).value)"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="showPassword.set(!showPassword())"
+              aria-label="Toggle password visibility"
+            >
+              @if (showPassword()) {
+                👁️‍🗨️
+              } @else {
+                👁️
+              }
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading()">
+          @if (isLoading()) {
+            Logging in...
+          } @else {
+            Login to your account
+          }
+        </button>
+      </form>
+
+      <p class="warning-note">To secure your account, always log out once you are done!</p>
+
+      <div class="login-links">
+        <a href="javascript:void(0)" (click)="onForgotPassword()">Forgot password?</a>
+        <a routerLink="/register">New Student Registration</a>
+      </div>
+    </div>
+  </div>
+</div>

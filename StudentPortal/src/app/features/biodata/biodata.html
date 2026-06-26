@@ -1,0 +1,149 @@
+<div class="biodata-container">
+  <div class="page-header">
+    <h1 class="page-title">Personal Biodata</h1>
+    <p class="text-muted">Update your details for identity card printing and profiling</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+  }
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <div class="card">
+    <form (submit)="onSubmit($event)">
+      <!-- Academic details section (read-only) -->
+      <h3 class="section-subtitle">Academic Details (Read-only)</h3>
+      <div class="grid-3 mb-2">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" [value]="fullName()" disabled />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Matric Number</label>
+          <input type="text" class="form-control" [value]="student()?.matricNumber" disabled />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <input type="text" class="form-control" [value]="student()?.department" disabled />
+        </div>
+      </div>
+
+      <!-- Profile Photo -->
+      <h3 class="section-subtitle">Profile Photo</h3>
+      <div class="avatar-edit-section">
+        <img
+          [src]="profilePhotoUrl() || 'https://i.pravatar.cc/150?img=68'"
+          alt="Profile Photo"
+          class="avatar-preview"
+        />
+        <div class="avatar-inputs">
+          <label class="form-label">Photo URL</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Paste image link URL here"
+            [value]="profilePhotoUrl() || ''"
+            (input)="profilePhotoUrl.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <!-- Personal details (editable) -->
+      <h3 class="section-subtitle">Personal Details</h3>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <input
+            type="tel"
+            id="phone"
+            class="form-control"
+            placeholder="e.g. 08012345678"
+            [value]="phone() || ''"
+            (input)="phone.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="gender">Gender</label>
+          <select
+            id="gender"
+            class="form-control"
+            (change)="gender.set($any($event.target).value)"
+            required
+          >
+            <option value="">Select Gender</option>
+            <option value="Male" [selected]="gender() === 'Male'">Male</option>
+            <option value="Female" [selected]="gender() === 'Female'">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="dob">Date of Birth</label>
+          <input
+            type="date"
+            id="dob"
+            class="form-control"
+            [value]="formattedDob()"
+            (input)="dob.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="state">State of Origin</label>
+          <input
+            type="text"
+            id="state"
+            class="form-control"
+            placeholder="State of Origin"
+            [value]="stateOfOrigin() || ''"
+            (input)="stateOfOrigin.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lga">L.G.A</label>
+          <input
+            type="text"
+            id="lga"
+            class="form-control"
+            placeholder="LGA"
+            [value]="lga() || ''"
+            (input)="lga.set($any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="address">Residential Address</label>
+        <textarea
+          id="address"
+          class="form-control"
+          rows="3"
+          placeholder="Enter permanent address details"
+          [value]="address() || ''"
+          (input)="address.set($any($event.target).value)"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+          @if (submitting()) {
+            Saving details...
+          } @else {
+            Save & Complete Biodata
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

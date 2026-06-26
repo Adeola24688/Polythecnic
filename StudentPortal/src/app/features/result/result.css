@@ -1,0 +1,55 @@
+.filter-bar {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-bar .form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+/* Summary Metric Cards */
+.summary-metric-card {
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.gpa-card {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.cgpa-card {
+  background: linear-gradient(135deg, #10b981, #047857);
+}
+
+.credits-card {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.metric-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.print-section {
+  display: flex;
+  justify-content: flex-end;
+}

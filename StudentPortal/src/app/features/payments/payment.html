@@ -1,0 +1,98 @@
+<div class="payment-container">
+  <div class="page-header">
+    <h1 class="page-title">Fee Payments</h1>
+    <p class="text-muted">Pay tuition fees, portal charges and manage transaction receipts</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+  }
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <div class="grid-3 mb-2">
+    <!-- Outstanding Balance Info -->
+    <div class="card card-pay-cta">
+      <h2 class="card-title text-white">💳 Outstanding Charges</h2>
+      <div class="cta-body">
+        <span class="cta-label">Session Tuition Fees</span>
+        <strong class="cta-amount">₦150,000.00</strong>
+        <button
+          class="btn btn-pay-now"
+          [disabled]="hasPaidSchoolFees() || paying()"
+          (click)="payFees()"
+        >
+          @if (hasPaidSchoolFees()) {
+            Fees Fully Paid ✅
+          } @else if (paying()) {
+            Processing Payment...
+          } @else {
+            Pay Now
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Small info card -->
+    <div class="card info-card-status">
+      <h3>PAYMENT PORTAL INFO</h3>
+      <p class="text-muted">
+        All transactions use card credentials or bank transfers. Please verify all receipts after
+        completion.
+      </p>
+      <div class="support-text">📞 Support: support@safpoly.org</div>
+    </div>
+  </div>
+
+  <!-- Transaction History Table -->
+  <div class="card">
+    <h2 class="card-title">📜 Transaction History</h2>
+
+    @if (loading()) {
+      <div class="skeleton" style="height: 200px; border-radius: 8px"></div>
+    } @else if (paymentsList().length === 0) {
+      <div class="empty-state">No payment records found for your account.</div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Purpose</th>
+              <th>Session</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Paid Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (payment of paymentsList(); track payment.id) {
+              <tr>
+                <td>
+                  <code class="ref-code">{{ payment.reference || 'N/A' }}</code>
+                </td>
+                <td>
+                  <strong>{{ payment.purpose }}</strong>
+                </td>
+                <td>{{ payment.session }}</td>
+                <td>₦{{ payment.amount | number: '1.2-2' }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [class.badge-success]="payment.status === 'Completed'"
+                    [class.badge-warning]="payment.status === 'Pending'"
+                    [class.badge-danger]="payment.status === 'Failed'"
+                  >
+                    {{ payment.status }}
+                  </span>
+                </td>
+                <td>{{ payment.paidAt ? (payment.paidAt | date: 'medium') : 'N/A' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

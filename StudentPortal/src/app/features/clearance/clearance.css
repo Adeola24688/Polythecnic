@@ -1,0 +1,96 @@
+.prereq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.prereq-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.prereq-item.completed {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.prereq-status-icon {
+  font-size: 1.25rem;
+  background: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+.prereq-details h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.prereq-details p {
+  font-size: 0.8rem;
+}
+
+/* Status Cards */
+.card-status-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.no-clearance-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.not-req-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.clearance-status-box {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.clearance-status-box.approved {
+  background-color: #ecfdf5;
+  border: 2px solid #059669;
+  color: #064e3b;
+}
+
+.clearance-status-box.pending {
+  background-color: #fffbeb;
+  border: 2px solid #d97706;
+  color: #78350f;
+}
+
+.status-symbol {
+  font-size: 2.5rem;
+}
+
+.status-text h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: inherit;
+}
+
+.status-text p {
+  font-size: 0.85rem;
+}

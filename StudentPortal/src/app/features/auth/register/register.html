@@ -1,0 +1,133 @@
+<div class="register-wrapper">
+  <div class="register-card">
+    <div class="card-logo">
+      <img
+        src="https://student.safpoly.org/images/logo.png"
+        alt="SAF Polytechnic Logo"
+        onerror="this.src = 'https://i.ibb.co/1n5bWb7/safpoly.png'"
+      />
+    </div>
+    <h2 class="portal-title">New Student Registration</h2>
+    <p class="portal-subtitle">Create your student portal account</p>
+
+    @if (errorMessage()) {
+      <div class="register-error">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form (submit)="onSubmit($event)">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="firstName">First Name</label>
+          <input
+            type="text"
+            id="firstName"
+            class="form-control"
+            placeholder="First Name"
+            [value]="firstName()"
+            (input)="firstName.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input
+            type="text"
+            id="lastName"
+            class="form-control"
+            placeholder="Last Name"
+            [value]="lastName()"
+            (input)="lastName.set($any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="matricNumber">Matric Number</label>
+          <input
+            type="text"
+            id="matricNumber"
+            class="form-control"
+            placeholder="e.g. 24/SLT/009"
+            [value]="matricNumber()"
+            (input)="matricNumber.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="email@example.com"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="department">Department</label>
+          <select
+            id="department"
+            class="form-control"
+            (change)="department.set($any($event.target).value)"
+            required
+          >
+            <option value="">Select Department</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Science Laboratory Technology">Science Laboratory Technology</option>
+            <option value="Statistics">Statistics</option>
+            <option value="Business Administration">Business Administration</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="level">Level</label>
+          <select
+            id="level"
+            class="form-control"
+            (change)="level.set($any($event.target).value)"
+            required
+          >
+            <option value="100">100 Level</option>
+            <option value="200">200 Level</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          class="form-control"
+          placeholder="Min 6 characters"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading()">
+        @if (isLoading()) {
+          Creating account...
+        } @else {
+          Register Account
+        }
+      </button>
+    </form>
+
+    <div class="login-links">
+      <a routerLink="/login">Already have an account? Sign In</a>
+    </div>
+  </div>
+</div>

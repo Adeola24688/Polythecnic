@@ -1,0 +1,132 @@
+<div class="dashboard-wrapper">
+  <!-- Profile Bar -->
+  <div class="profile-summary-bar">
+    <div class="summary-left">
+      <h2>
+        {{ student()?.lastName }} {{ student()?.firstName }} {{ student()?.middleName || '' }}
+      </h2>
+      <p class="summary-matric">{{ student()?.matricNumber }}</p>
+    </div>
+    <div class="summary-right">
+      <span class="session-label">{{ student()?.session || '2024/2025' }} Session</span>
+      <span class="semester-label">{{ student()?.semester || 'Second' }} Semester</span>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="skeleton-grid">
+      <div class="card skeleton" style="height: 120px"></div>
+      <div class="card skeleton" style="height: 120px"></div>
+      <div class="card skeleton" style="height: 120px"></div>
+      <div class="card skeleton" style="height: 120px"></div>
+    </div>
+  } @else {
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid-4">
+      <!-- Student ID Card Block -->
+      <div class="action-block card-id-card">
+        <div class="block-header">
+          <span class="block-icon">🏠</span>
+          <h3>STUDENT ID CARD</h3>
+        </div>
+        <div class="block-actions">
+          <button class="btn btn-action" (click)="downloadIDCard()">
+            <span>⬇️</span> Download Card
+          </button>
+        </div>
+      </div>
+
+      <!-- Biodata Block -->
+      <div class="action-block card-biodata">
+        <div class="block-header">
+          <span class="block-icon">👤</span>
+          <h3>BIODATA</h3>
+        </div>
+        <div class="block-actions">
+          <button class="btn btn-action" routerLink="/biodata"><span>👁️</span> Open</button>
+        </div>
+      </div>
+
+      <!-- Course Registration Block -->
+      <div class="action-block card-registration">
+        <div class="block-header">
+          <span class="block-icon">📝</span>
+          <h3>COURSE REGISTRATION</h3>
+        </div>
+        <div class="block-actions">
+          <button class="btn btn-action" routerLink="/registration"><span>👁️</span> Open</button>
+        </div>
+      </div>
+
+      <!-- Result Block -->
+      <div class="action-block card-result">
+        <div class="block-header">
+          <span class="block-icon">📊</span>
+          <h3>RESULT</h3>
+        </div>
+        <div class="block-actions">
+          <button class="btn btn-action" routerLink="/result"><span>👁️</span> Open</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary Status Row -->
+    <div class="status-grid">
+      <!-- Exam Clearance Status -->
+      <div class="status-card">
+        <h3>EXAMINATION CLEARANCE</h3>
+        <div class="status-visual">
+          <img
+            src="https://img.icons8.com/ios/100/null/signature-required.png"
+            alt="Clearance Icon"
+            class="status-icon"
+            onerror="this.style.display = 'none'"
+          />
+          <span class="not-available">
+            @if (dashboardData()?.clearanceStatus === 'Cleared') {
+              Cleared ✅
+            } @else {
+              Not Available 🚫
+            }
+          </span>
+        </div>
+      </div>
+
+      <!-- Student ID Card Status -->
+      <div class="status-card">
+        <h3>STUDENT ID CARD</h3>
+        <div class="status-visual">
+          <img
+            src="https://img.icons8.com/ios/100/null/identity-card.png"
+            alt="ID Card Icon"
+            class="status-icon"
+            onerror="this.style.display = 'none'"
+          />
+          <span class="not-available">
+            @if (dashboardData()?.hasBiodata) {
+              Ready to Download 📇
+            } @else {
+              Not Available 🚫
+            }
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Notice Panel -->
+      <div class="status-card">
+        <h3>QUICK NOTICE</h3>
+        <div class="status-visual notices-list">
+          @if (dashboardData()?.notices && dashboardData()!.notices.length > 0) {
+            <ul>
+              @for (notice of dashboardData()?.notices; track $index) {
+                <li>📢 {{ notice }}</li>
+              }
+            </ul>
+          } @else {
+            <span class="not-available">Not Available 🚫</span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,90 @@
+.register-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f1f5f9;
+  background-image: radial-gradient(
+    circle at 10% 20%,
+    rgba(216, 241, 230, 0.46) 0.1%,
+    rgba(233, 226, 226, 0.28) 90.1%
+  );
+}
+
+.register-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1.5px solid #e2e8f0;
+}
+
+.card-logo {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-logo img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.portal-title {
+  font-size: 1.4rem;
+  color: #1e3a8a;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.portal-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.btn-block {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+}
+
+.register-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #fca5a5;
+  text-align: center;
+}
+
+.login-links {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.login-links a {
+  color: #ef4444;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .register-card {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,85 @@
+<div class="settings-container">
+  <div class="page-header">
+    <h1 class="page-title">Portal Settings</h1>
+    <p class="text-muted">Manage your security settings and portal options</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+  }
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <div class="grid-2">
+    <!-- Change Password Form -->
+    <div class="card">
+      <h2 class="card-title">🔑 Change Password</h2>
+      <p class="text-muted mb-2">
+        Ensure your account is using a long, random password to stay secure.
+      </p>
+
+      <form (submit)="onChangePassword($event)">
+        <div class="form-group">
+          <label class="form-label" for="currentPassword">Current Password</label>
+          <input
+            type="password"
+            id="currentPassword"
+            class="form-control"
+            placeholder="Current Password"
+            [value]="currentPassword()"
+            (input)="currentPassword.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newPassword">New Password</label>
+          <input
+            type="password"
+            id="newPassword"
+            class="form-control"
+            placeholder="New Password (min 6 chars)"
+            [value]="newPassword()"
+            (input)="newPassword.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm New Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-control"
+            placeholder="Confirm New Password"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            @if (submitting()) {
+              Updating...
+            } @else {
+              Update Password
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Security Info / Tips -->
+    <div class="card card-tips">
+      <h2 class="card-title">🛡️ Security Tips</h2>
+      <ul class="tips-list">
+        <li>🔒 Never share your portal credentials with anyone, including staff members.</li>
+        <li>💻 Always sign out when using a public computer or library system.</li>
+        <li>🔄 Change your password every semester to prevent unauthorized entries.</li>
+        <li>📨 Ensure your email account is secure, as it is used for account retrieval.</li>
+      </ul>
+    </div>
+  </div>
+</div>

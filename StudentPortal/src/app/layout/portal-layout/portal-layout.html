@@ -1,0 +1,116 @@
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar" [class.open]="sidebarOpen()">
+    <div class="sidebar-brand">
+      <img
+        src="https://student.safpoly.org/images/logo.png"
+        alt="SAF Logo"
+        class="brand-logo"
+        onerror="this.src = 'https://i.ibb.co/1n5bWb7/safpoly.png'"
+      />
+      <div class="brand-details">
+        <span class="brand-name">SAF POLY</span>
+        <span class="brand-tag">Student Portal</span>
+      </div>
+    </div>
+
+    <!-- Student Quick Profile Info -->
+    <div class="sidebar-profile">
+      <div class="profile-avatar-wrapper">
+        <img
+          [src]="student()?.profilePhoto || 'https://i.pravatar.cc/150?img=68'"
+          alt="Profile Photo"
+          class="profile-avatar"
+        />
+      </div>
+      <div class="profile-info">
+        <span class="profile-name">{{ student()?.firstName }} {{ student()?.lastName }}</span>
+        <span class="profile-matric">{{ student()?.matricNumber }}</span>
+      </div>
+    </div>
+
+    <!-- Nav Menu -->
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+      <a routerLink="/biodata" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Biodata</span>
+      </a>
+
+      <a routerLink="/registration" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-text">Registration</span>
+      </a>
+
+      <a routerLink="/result" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Result</span>
+      </a>
+
+      <a routerLink="/clearance" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">✅</span>
+        <span class="nav-text">Exam Clearance</span>
+      </a>
+
+      <a routerLink="/payments" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💳</span>
+        <span class="nav-text">Payments</span>
+      </a>
+
+      <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Settings</span>
+      </a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="onLogout()">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-text">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="portal-content">
+    <!-- Top Header -->
+    <header class="portal-header">
+      <div class="header-left">
+        <button
+          class="sidebar-toggle-btn"
+          (click)="sidebarOpen.set(!sidebarOpen())"
+          aria-label="Toggle Sidebar"
+        >
+          ☰
+        </button>
+        <div class="header-greeting">
+          Welcome, <strong>{{ student()?.firstName }}</strong>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-academic-details">
+          <span class="session-badge">{{ student()?.session || '2024/2025' }} Session</span>
+          <span class="semester-badge">{{ student()?.semester || 'Second' }} Semester</span>
+        </div>
+        <div class="user-dropdown">
+          <img
+            [src]="student()?.profilePhoto || 'https://i.pravatar.cc/150?img=68'"
+            alt="User Avatar"
+            class="header-avatar"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View Outlet -->
+    <main class="main-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

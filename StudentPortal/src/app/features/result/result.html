@@ -1,0 +1,111 @@
+<div class="result-container">
+  <div class="page-header">
+    <h1 class="page-title">Academic Results</h1>
+    <p class="text-muted">View your semester grades and cumulative GPA performance</p>
+  </div>
+
+  <div class="card mb-2">
+    <div class="filter-bar">
+      <div class="form-group mb-0">
+        <label class="form-label" for="session">Academic Session</label>
+        <select
+          id="session"
+          class="form-control"
+          (change)="onFilterChange($any($event.target).value, selectedSemester())"
+        >
+          <option value="2024/2025" [selected]="selectedSession() === '2024/2025'">
+            2024/2025
+          </option>
+          <option value="2023/2024" [selected]="selectedSession() === '2023/2024'">
+            2023/2024
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group mb-0">
+        <label class="form-label" for="semester">Semester</label>
+        <select
+          id="semester"
+          class="form-control"
+          (change)="onFilterChange(selectedSession(), $any($event.target).value)"
+        >
+          <option value="First" [selected]="selectedSemester() === 'First'">First Semester</option>
+          <option value="Second" [selected]="selectedSemester() === 'Second'">
+            Second Semester
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="skeleton" style="height: 300px; border-radius: 8px"></div>
+  } @else {
+    <!-- GPA Performance summary -->
+    <div class="grid-3 mb-2">
+      <div class="summary-metric-card gpa-card">
+        <span class="metric-title">Semester GPA</span>
+        <strong class="metric-value">{{ summaryData()?.gpa || '0.00' }}</strong>
+      </div>
+      <div class="summary-metric-card cgpa-card">
+        <span class="metric-title">Cumulative CGPA</span>
+        <strong class="metric-value">{{ summaryData()?.cgpa || '0.00' }}</strong>
+      </div>
+      <div class="summary-metric-card credits-card">
+        <span class="metric-title">Total Credit Units</span>
+        <strong class="metric-value">{{ summaryData()?.totalCreditUnits || '0' }}</strong>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="card">
+      <h2 class="card-title">📊 Result Details</h2>
+
+      @if (resultsList().length === 0) {
+        <div class="empty-state">No results found for the selected session and semester.</div>
+      } @else {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Credits</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (res of resultsList(); track res.id) {
+                <tr>
+                  <td>
+                    <strong class="text-primary">{{ res.courseCode }}</strong>
+                  </td>
+                  <td>{{ res.courseTitle }}</td>
+                  <td>{{ res.creditUnit }}</td>
+                  <td>{{ res.score }}%</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class.badge-success]="res.score >= 50"
+                      [class.badge-warning]="res.score >= 40 && res.score < 50"
+                      [class.badge-danger]="res.score < 40"
+                    >
+                      {{ res.grade }}
+                    </span>
+                  </td>
+                  <td>{{ res.gradePoint }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="print-section mt-2">
+          <button class="btn btn-outline" (click)="printSlip()">🖨️ Print Result Slip</button>
+        </div>
+      }
+    </div>
+  }
+</div>
