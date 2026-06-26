@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/student-portal/browser",
+  "outputDirectory": "dist/StudentPortal/browser",
   "framework": "angular",
   "rewrites": [
     {
