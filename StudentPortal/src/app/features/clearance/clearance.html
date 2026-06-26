@@ -1,123 +1,106 @@
 <div class="clearance-container">
-  <div class="page-header">
-    <h1 class="page-title">Examination Clearance</h1>
-    <p class="text-muted">
-      Generate your examination clearance card by completing all prerequisites
-    </p>
+
+  <div class="clearance-title-row">
+    <h2 class="clearance-title">EXAMINATION CLEARANCE</h2>
+    @if (canRequestClearance()) {
+    <button class="btn-request" [disabled]="requesting()" (click)="requestClearance()">
+      {{ requesting() ? 'Requesting...' : '+ Request Clearance' }}
+    </button>
+    }
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert-success">{{ successMessage() }}</div>
+  <div class="alert alert-success">{{ successMessage() }}</div>
   }
   @if (errorMessage()) {
-    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  <div class="alert alert-danger">{{ errorMessage() }}</div>
   }
 
-  <div class="grid-2">
-    <!-- Prerequisite list -->
-    <div class="card">
-      <h2 class="card-title">📋 Clearance Prerequisites</h2>
-      <p class="text-muted mb-2">
-        The following prerequisites must be met before your clearance can be approved.
-      </p>
-
-      <div class="prereq-list">
-        <!-- Fees payment check -->
-        <div class="prereq-item" [class.completed]="prereqFeesPaid()">
-          <span class="prereq-status-icon">
-            @if (prereqFeesPaid()) {
-              ✅
-            } @else {
-              ❌
-            }
-          </span>
-          <div class="prereq-details">
-            <h4>School Fees & Charges Payment</h4>
-            <p class="text-muted">
-              Payment status must be completed in the Payments tab for this session.
-            </p>
-          </div>
-        </div>
-
-        <!-- Course registration check -->
-        <div class="prereq-item" [class.completed]="prereqCoursesRegistered()">
-          <span class="prereq-status-icon">
-            @if (prereqCoursesRegistered()) {
-              ✅
-            } @else {
-              ❌
-            }
-          </span>
-          <div class="prereq-details">
-            <h4>Course Registration</h4>
-            <p class="text-muted">
-              You must register at least one course for the current semester.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="action-footer mt-2">
-        <button
-          class="btn btn-primary btn-block"
-          [disabled]="!canRequestClearance() || requesting()"
-          (click)="requestClearance()"
-        >
-          @if (requesting()) {
-            Requesting Clearance...
-          } @else {
-            Submit Clearance Request
-          }
-        </button>
-      </div>
-    </div>
-
-    <!-- Clearance Card Approval Status -->
-    <div class="card card-status-display">
-      <h2 class="card-title">🔍 Approval Status</h2>
-      <p class="text-muted mb-2">Check the status of your examination clearance.</p>
-
-      @if (loading()) {
-        <div class="skeleton" style="height: 150px; border-radius: 8px"></div>
-      } @else if (!clearanceRecord()) {
-        <div class="no-clearance-state">
-          <span class="not-req-icon">📭</span>
-          <h3>No Clearance Requested</h3>
-          <p class="text-muted">Please complete the requirements and submit a clearance request.</p>
-        </div>
-      } @else {
-        <div
-          class="clearance-status-box"
-          [class.approved]="clearanceRecord()?.status === 'Cleared'"
-          [class.pending]="clearanceRecord()?.status === 'Pending'"
-        >
-          <span class="status-symbol">
-            @if (clearanceRecord()?.status === 'Cleared') {
-              🎓
-            } @else {
-              ⏳
-            }
-          </span>
-          <div class="status-text">
-            <h3>{{ clearanceRecord()?.status }}</h3>
-            <p class="text-muted">
-              @if (clearanceRecord()?.status === 'Cleared') {
-                Approved on {{ clearanceRecord()?.clearedAt | date: 'mediumDate' }}
-              } @else {
-                Waiting for admin review.
-              }
-            </p>
-          </div>
-        </div>
-
-        @if (clearanceRecord()?.status === 'Cleared') {
-          <div class="print-clearance mt-2">
-            <button class="btn btn-success btn-block" (click)="printClearanceSlip()">
-              🖨️ Print Clearance Slip
-            </button>
-          </div>
-        }
-      }
-    </div>
+  <!-- Prerequisites notice (only show if not all met) -->
+  @if (!prereqFeesPaid() || !prereqCoursesRegistered()) {
+  <div class="prereq-notice">
+    <strong>Prerequisites not fully met:</strong>
+    @if (!prereqFeesPaid()) {
+    <span class="prereq-tag unmet">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      School fees not paid
+    </span>
+    }
+    @if (!prereqCoursesRegistered()) {
+    <span class="prereq-tag unmet">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      No courses registered
+    </span>
+    }
   </div>
+  }
+
+  <!-- Clearance records table -->
+  <div class="table-card">
+    @if (loading()) {
+    <div class="skeleton-block"></div>
+    } @else if (allClearances().length === 0) {
+    <div class="empty-state">No clearance records found. Submit a clearance request to get started.</div>
+    } @else {
+    <table class="clearance-table">
+      <thead>
+        <tr>
+          <th>S/N</th>
+          <th>Name</th>
+          <th>Channel</th>
+          <th>Level</th>
+          <th>Semester</th>
+          <th>Session</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of allClearances(); track record.id; let i = $index) {
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td>{{ fullName() }}</td>
+          <td>{{ record.channel || 'POS' }}</td>
+          <td>{{ record.level || levelDisplay() }}</td>
+          <td>{{ record.semester }}</td>
+          <td>{{ record.sessionYear || sessionYear() }}</td>
+          <td>
+            <span class="status-badge" [class.status-cleared]="record.status === 'Cleared'"
+              [class.status-pending]="record.status === 'Pending'">
+              {{ record.status }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-download" title="Download clearance slip" (click)="printClearanceSlipFor(record)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- Pagination row -->
+    <div class="pagination-row">
+      <span class="pagination-info">
+        Items per page:
+        <select class="page-select" [(ngModel)]="pageSize">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </span>
+      <span class="pagination-count">1 – {{ allClearances().length }} of {{ allClearances().length }}</span>
+      <div class="pagination-btns">
+        <button class="pg-btn" disabled>|◀</button>
+        <button class="pg-btn" disabled>◀</button>
+        <button class="pg-btn" disabled>▶</button>
+        <button class="pg-btn" disabled>▶|</button>
+      </div>
+    </div>
+    }
+  </div>
+
 </div>

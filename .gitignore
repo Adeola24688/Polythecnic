@@ -20,6 +20,8 @@ StudentPortalAPI/appsettings.Development.json
 .idea/
 *.user
 *.suo
+.agents/
+.codex/
 
 # OS files
 .DS_Store

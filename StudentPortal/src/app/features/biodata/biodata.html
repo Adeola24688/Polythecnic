@@ -1,149 +1,992 @@
 <div class="biodata-container">
-  <div class="page-header">
-    <h1 class="page-title">Personal Biodata</h1>
-    <p class="text-muted">Update your details for identity card printing and profiling</p>
+  <div class="biodata-title-row">
+    <h2 class="biodata-title">STUDENT BIODATA</h2>
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert-success">{{ successMessage() }}</div>
+  <div class="alert alert-success">{{ successMessage() }}</div>
+  } @if (errorMessage()) {
+  <div class="alert alert-danger">{{ errorMessage() }}</div>
   }
-  @if (errorMessage()) {
-    <div class="alert alert-danger">{{ errorMessage() }}</div>
-  }
 
-  <div class="card">
-    <form (submit)="onSubmit($event)">
-      <!-- Academic details section (read-only) -->
-      <h3 class="section-subtitle">Academic Details (Read-only)</h3>
-      <div class="grid-3 mb-2">
-        <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" [value]="fullName()" disabled />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Matric Number</label>
-          <input type="text" class="form-control" [value]="student()?.matricNumber" disabled />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Department</label>
-          <input type="text" class="form-control" [value]="student()?.department" disabled />
-        </div>
-      </div>
-
-      <!-- Profile Photo -->
-      <h3 class="section-subtitle">Profile Photo</h3>
-      <div class="avatar-edit-section">
-        <img
-          [src]="profilePhotoUrl() || 'https://i.pravatar.cc/150?img=68'"
-          alt="Profile Photo"
-          class="avatar-preview"
-        />
-        <div class="avatar-inputs">
-          <label class="form-label">Photo URL</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Paste image link URL here"
-            [value]="profilePhotoUrl() || ''"
-            (input)="profilePhotoUrl.set($any($event.target).value)"
-          />
-        </div>
-      </div>
-
-      <!-- Personal details (editable) -->
-      <h3 class="section-subtitle">Personal Details</h3>
-
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label" for="phone">Phone Number</label>
-          <input
-            type="tel"
-            id="phone"
-            class="form-control"
-            placeholder="e.g. 08012345678"
-            [value]="phone() || ''"
-            (input)="phone.set($any($event.target).value)"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="gender">Gender</label>
-          <select
-            id="gender"
-            class="form-control"
-            (change)="gender.set($any($event.target).value)"
-            required
+  <!-- PERSONAL INFORMATION -->
+  <div class="accordion-section">
+    <div class="accordion-header header-green" (click)="toggleSection('personal')">
+      <span>PERSONAL INFORMATION</span>
+      <span class="accordion-icon">{{ isSectionOpen('personal') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('personal')) {
+    <div class="accordion-body">
+      @if (!isEditing('personal')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('personal')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
           >
-            <option value="">Select Gender</option>
-            <option value="Male" [selected]="gender() === 'Male'">Male</option>
-            <option value="Female" [selected]="gender() === 'Female'">Female</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="form-group">
-          <label class="form-label" for="dob">Date of Birth</label>
-          <input
-            type="date"
-            id="dob"
-            class="form-control"
-            [value]="formattedDob()"
-            (input)="dob.set($any($event.target).value)"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="state">State of Origin</label>
-          <input
-            type="text"
-            id="state"
-            class="form-control"
-            placeholder="State of Origin"
-            [value]="stateOfOrigin() || ''"
-            (input)="stateOfOrigin.set($any($event.target).value)"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="lga">L.G.A</label>
-          <input
-            type="text"
-            id="lga"
-            class="form-control"
-            placeholder="LGA"
-            [value]="lga() || ''"
-            (input)="lga.set($any($event.target).value)"
-            required
-          />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="address">Residential Address</label>
-        <textarea
-          id="address"
-          class="form-control"
-          rows="3"
-          placeholder="Enter permanent address details"
-          [value]="address() || ''"
-          (input)="address.set($any($event.target).value)"
-          required
-        ></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="submitting()">
-          @if (submitting()) {
-            Saving details...
-          } @else {
-            Save & Complete Biodata
-          }
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
         </button>
       </div>
-    </form>
+      <div class="personal-layout">
+        <div class="photo-column">
+          <div class="photo-wrapper">
+            @if (photoUrl()) {
+            <img [src]="photoUrl()!" alt="Profile Photo" class="profile-photo" />
+            } @else {
+            <div class="profile-photo-placeholder">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="user-icon-svg"
+              >
+                <path
+                  d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+                />
+              </svg>
+            </div>
+            } @if (uploadingPhoto()) {
+            <div class="photo-overlay">Uploading...</div>
+            }
+            <label class="photo-upload-label" title="Change photo">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="14"
+                height="14"
+                style="vertical-align: middle; margin-right: 4px"
+              >
+                <path
+                  d="M12 15.2A3.2 3.2 0 1 1 15.2 12 3.2 3.2 0 0 1 12 15.2zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 1 1 5-5 5 5 0 0 1-5 5z"
+                />
+              </svg>
+              Change Photo
+              <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+            </label>
+          </div>
+          @if (uploadPhotoError()) {
+          <p class="upload-error">{{ uploadPhotoError() }}</p>
+          }
+          <p class="photo-name">{{ fullName() }}</p>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Email</span
+            ><span class="info-value">{{ student()?.email || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone Number</span
+            ><span class="info-value highlight">{{ student()?.phone || 'Not provided' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Gender</span
+            ><span class="info-value highlight">{{ student()?.gender || 'Not provided' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Nationality</span
+            ><span class="info-value highlight">Nigeria</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">State</span
+            ><span class="info-value highlight"
+              >{{ student()?.stateOfOrigin || 'Not provided' }}</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Local Government</span
+            ><span class="info-value highlight">{{ student()?.lga || 'Not provided' }}</span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Contact Address</span
+            ><span class="info-value highlight">{{ student()?.address || 'Not provided' }}</span>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <form (submit)="onSubmit($event)" class="edit-form">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input
+              type="tel"
+              class="form-control"
+              placeholder="e.g. 08012345678"
+              [value]="phone()"
+              (input)="phone.set($any($event.target).value)"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select class="form-control" (change)="gender.set($any($event.target).value)">
+              <option value="">Select Gender</option>
+              <option value="Male" [selected]="gender() === 'Male'">Male</option>
+              <option value="Female" [selected]="gender() === 'Female'">Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input
+              type="date"
+              class="form-control"
+              [value]="formattedDob()"
+              (input)="dob.set($any($event.target).value)"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">State of Origin</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="State of Origin"
+              [value]="stateOfOrigin()"
+              (input)="stateOfOrigin.set($any($event.target).value)"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">L.G.A</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Local Government Area"
+              [value]="lga()"
+              (input)="lga.set($any($event.target).value)"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            placeholder="Enter your address"
+            [value]="address()"
+            (input)="address.set($any($event.target).value)"
+          ></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            {{ submitting() ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- PROGRAM INFORMATION -->
+  <div class="accordion-section">
+    <div class="accordion-header header-gray" (click)="toggleSection('program')">
+      <span>PROGRAM INFORMATION</span>
+      <span class="accordion-icon">{{ isSectionOpen('program') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('program')) {
+    <div class="accordion-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Department</span
+          ><span class="info-value highlight">{{ student()?.department || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Faculty</span
+          ><span class="info-value highlight">{{ student()?.faculty || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Level</span
+          ><span class="info-value highlight">{{ student()?.level || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Session</span
+          ><span class="info-value highlight">{{ student()?.session || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Semester</span
+          ><span class="info-value highlight">{{ student()?.semester || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Matric Number</span
+          ><span class="info-value highlight">{{ student()?.matricNumber || 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- SPONSOR INFORMATION -->
+  <div class="accordion-section">
+    <div class="accordion-header header-gray" (click)="toggleSection('sponsor')">
+      <span>SPONSOR INFORMATION</span>
+      <span class="accordion-icon">{{ isSectionOpen('sponsor') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('sponsor')) {
+    <div class="accordion-body">
+      @if (!isEditing('sponsor')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('sponsor')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (hasData(sponsorData())) {
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Sponsor Name</span
+          ><span class="info-value highlight">{{ sponsorData().name || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Relationship</span
+          ><span class="info-value highlight">{{ sponsorData().relationship || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Phone</span
+          ><span class="info-value highlight">{{ sponsorData().phone || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Occupation</span
+          ><span class="info-value highlight">{{ sponsorData().occupation || 'N/A' }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Address</span
+          ><span class="info-value highlight">{{ sponsorData().address || 'N/A' }}</span>
+        </div>
+      </div>
+      } @else {
+      <p class="empty-section-text">No sponsor information provided yet. Click Edit to add.</p>
+      } } @else {
+      <div class="edit-form">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Sponsor Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Full name of sponsor"
+              [value]="sponsorForm().name"
+              (input)="sponsorForm.set({...sponsorForm(), name: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Relationship to Student</label>
+            <select
+              class="form-control"
+              (change)="sponsorForm.set({...sponsorForm(), relationship: $any($event.target).value})"
+            >
+              <option value="">Select Relationship</option>
+              <option value="Parent" [selected]="sponsorForm().relationship === 'Parent'">
+                Parent
+              </option>
+              <option value="Guardian" [selected]="sponsorForm().relationship === 'Guardian'">
+                Guardian
+              </option>
+              <option value="Sibling" [selected]="sponsorForm().relationship === 'Sibling'">
+                Sibling
+              </option>
+              <option value="Employer" [selected]="sponsorForm().relationship === 'Employer'">
+                Employer
+              </option>
+              <option value="Other" [selected]="sponsorForm().relationship === 'Other'">
+                Other
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input
+              type="tel"
+              class="form-control"
+              placeholder="Sponsor's phone"
+              [value]="sponsorForm().phone"
+              (input)="sponsorForm.set({...sponsorForm(), phone: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Occupation</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Sponsor's occupation"
+              [value]="sponsorForm().occupation"
+              (input)="sponsorForm.set({...sponsorForm(), occupation: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea
+            class="form-control"
+            rows="2"
+            placeholder="Sponsor's address"
+            [value]="sponsorForm().address"
+            (input)="sponsorForm.set({...sponsorForm(), address: $any($event.target).value})"
+          ></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveSponsor()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- PARENTS/GUARDIAN -->
+  <div class="accordion-section">
+    <div class="accordion-header header-gray" (click)="toggleSection('parents')">
+      <span>PARENTS/GUARDIAN</span>
+      <span class="accordion-icon">{{ isSectionOpen('parents') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('parents')) {
+    <div class="accordion-body">
+      @if (!isEditing('parents')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('parents')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (hasData(parentsData())) {
+      <div class="parents-grid">
+        <div class="parent-group">
+          <h4 class="parent-group-title">Father</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Full Name</span
+              ><span class="info-value highlight">{{ parentsData().fatherName || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span
+              ><span class="info-value highlight">{{ parentsData().fatherPhone || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Occupation</span
+              ><span class="info-value highlight"
+                >{{ parentsData().fatherOccupation || 'N/A' }}</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="parent-group">
+          <h4 class="parent-group-title">Mother</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Full Name</span
+              ><span class="info-value highlight">{{ parentsData().motherName || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span
+              ><span class="info-value highlight">{{ parentsData().motherPhone || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Occupation</span
+              ><span class="info-value highlight"
+                >{{ parentsData().motherOccupation || 'N/A' }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <p class="empty-section-text">
+        No parent/guardian information provided yet. Click Edit to add.
+      </p>
+      } } @else {
+      <div class="edit-form">
+        <h4 class="parent-group-title">Father's Information</h4>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Father's Full Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Father's full name"
+              [value]="parentsForm().fatherName"
+              (input)="parentsForm.set({...parentsForm(), fatherName: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Father's Phone</label>
+            <input
+              type="tel"
+              class="form-control"
+              placeholder="Father's phone"
+              [value]="parentsForm().fatherPhone"
+              (input)="parentsForm.set({...parentsForm(), fatherPhone: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Father's Occupation</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Father's occupation"
+              [value]="parentsForm().fatherOccupation"
+              (input)="parentsForm.set({...parentsForm(), fatherOccupation: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <h4 class="parent-group-title" style="margin-top: 1rem">Mother's Information</h4>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Mother's Full Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Mother's full name"
+              [value]="parentsForm().motherName"
+              (input)="parentsForm.set({...parentsForm(), motherName: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mother's Phone</label>
+            <input
+              type="tel"
+              class="form-control"
+              placeholder="Mother's phone"
+              [value]="parentsForm().motherPhone"
+              (input)="parentsForm.set({...parentsForm(), motherPhone: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mother's Occupation</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Mother's occupation"
+              [value]="parentsForm().motherOccupation"
+              (input)="parentsForm.set({...parentsForm(), motherOccupation: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveParents()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- INSTITUTION ATTENDED -->
+  <div class="accordion-section">
+    <div class="accordion-header header-gray" (click)="toggleSection('institution')">
+      <span>INSTITUTION ATTENDED</span>
+      <span class="accordion-icon">{{ isSectionOpen('institution') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('institution')) {
+    <div class="accordion-body">
+      @if (!isEditing('institution')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('institution')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (hasData(institutionData())) {
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Institution Name</span
+          ><span class="info-value highlight">{{ institutionData().name || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">State</span
+          ><span class="info-value highlight">{{ institutionData().state || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Year From</span
+          ><span class="info-value highlight">{{ institutionData().from || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Year To</span
+          ><span class="info-value highlight">{{ institutionData().to || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Certificate Obtained</span
+          ><span class="info-value highlight">{{ institutionData().certificate || 'N/A' }}</span>
+        </div>
+      </div>
+      } @else {
+      <p class="empty-section-text">No institution information provided yet. Click Edit to add.</p>
+      } } @else {
+      <div class="edit-form">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Institution Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. Government Secondary School"
+              [value]="institutionForm().name"
+              (input)="institutionForm.set({...institutionForm(), name: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="State"
+              [value]="institutionForm().state"
+              (input)="institutionForm.set({...institutionForm(), state: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year From</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. 2018"
+              [value]="institutionForm().from"
+              (input)="institutionForm.set({...institutionForm(), from: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year To</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. 2023"
+              [value]="institutionForm().to"
+              (input)="institutionForm.set({...institutionForm(), to: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Certificate Obtained</label>
+            <select
+              class="form-control"
+              (change)="institutionForm.set({...institutionForm(), certificate: $any($event.target).value})"
+            >
+              <option value="">Select Certificate</option>
+              <option value="WAEC/SSCE" [selected]="institutionForm().certificate === 'WAEC/SSCE'">
+                WAEC/SSCE
+              </option>
+              <option value="NECO" [selected]="institutionForm().certificate === 'NECO'">
+                NECO
+              </option>
+              <option value="GCE" [selected]="institutionForm().certificate === 'GCE'">GCE</option>
+              <option value="FSLC" [selected]="institutionForm().certificate === 'FSLC'">
+                FSLC
+              </option>
+              <option value="Other" [selected]="institutionForm().certificate === 'Other'">
+                Other
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveInstitution()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- ND RESULT -->
+  <div class="accordion-section">
+    <div class="accordion-header header-gray" (click)="toggleSection('nd')">
+      <span>ND RESULT</span>
+      <span class="accordion-icon">{{ isSectionOpen('nd') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('nd')) {
+    <div class="accordion-body">
+      @if (!isEditing('nd')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('nd')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (hasData(ndData())) {
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Previous Institution</span
+          ><span class="info-value highlight">{{ ndData().institution || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">ND Grade/Class</span
+          ><span class="info-value highlight">{{ ndData().grade || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Year of Graduation</span
+          ><span class="info-value highlight">{{ ndData().year || 'N/A' }}</span>
+        </div>
+      </div>
+      } @else {
+      <p class="empty-section-text">No ND result provided yet. Click Edit to add.</p>
+      } } @else {
+      <div class="edit-form">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Previous Institution</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Institution name"
+              [value]="ndForm().institution"
+              (input)="ndForm.set({...ndForm(), institution: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ND Grade/Class</label>
+            <select
+              class="form-control"
+              (change)="ndForm.set({...ndForm(), grade: $any($event.target).value})"
+            >
+              <option value="">Select Grade</option>
+              <option value="Distinction" [selected]="ndForm().grade === 'Distinction'">
+                Distinction
+              </option>
+              <option value="Upper Credit" [selected]="ndForm().grade === 'Upper Credit'">
+                Upper Credit
+              </option>
+              <option value="Lower Credit" [selected]="ndForm().grade === 'Lower Credit'">
+                Lower Credit
+              </option>
+              <option value="Pass" [selected]="ndForm().grade === 'Pass'">Pass</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year of Graduation</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. 2023"
+              [value]="ndForm().year"
+              (input)="ndForm.set({...ndForm(), year: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveNd()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- EXAMINATION TAKEN (O'LEVEL) -->
+  <div class="accordion-section">
+    <div class="accordion-header header-yellow" (click)="toggleSection('olevel')">
+      <span>EXAMINATION TAKEN, (O'LEVEL RESULT)</span>
+      <span class="accordion-icon">{{ isSectionOpen('olevel') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('olevel')) {
+    <div class="accordion-body">
+      @if (!isEditing('olevel')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('olevel')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (olevelData().examType) {
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Examination Type</span
+          ><span class="info-value highlight">{{ olevelData().examType }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Year</span
+          ><span class="info-value highlight">{{ olevelData().year }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Registration Number</span
+          ><span class="info-value highlight">{{ olevelData().regNumber }}</span>
+        </div>
+      </div>
+      <table class="subjects-table">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Subject</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sub of olevelData().subjects; track $index; let i = $index) { @if (sub.subject) {
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ sub.subject }}</td>
+            <td><span class="grade-badge">{{ sub.grade }}</span></td>
+          </tr>
+          } }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-section-text">No O'Level result provided yet. Click Edit to add.</p>
+      } } @else {
+      <div class="edit-form">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Examination Type</label>
+            <select
+              class="form-control"
+              (change)="olevelForm.set({...olevelForm(), examType: $any($event.target).value})"
+            >
+              <option value="">Select Type</option>
+              <option value="WAEC" [selected]="olevelForm().examType === 'WAEC'">WAEC</option>
+              <option value="NECO" [selected]="olevelForm().examType === 'NECO'">NECO</option>
+              <option value="GCE" [selected]="olevelForm().examType === 'GCE'">GCE</option>
+              <option value="NABTEB" [selected]="olevelForm().examType === 'NABTEB'">NABTEB</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. 2023"
+              [value]="olevelForm().year"
+              (input)="olevelForm.set({...olevelForm(), year: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Registration Number</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Exam reg number"
+              [value]="olevelForm().regNumber"
+              (input)="olevelForm.set({...olevelForm(), regNumber: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <table class="subjects-table subjects-edit">
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Subject</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (sub of olevelForm().subjects; track $index; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Subject name"
+                  [value]="sub.subject"
+                  (input)="updateOlevelSubject(i, 'subject', $any($event.target).value)"
+                />
+              </td>
+              <td>
+                <select
+                  class="form-control"
+                  (change)="updateOlevelSubject(i, 'grade', $any($event.target).value)"
+                >
+                  <option value="">-</option>
+                  <option value="A1" [selected]="sub.grade === 'A1'">A1</option>
+                  <option value="B2" [selected]="sub.grade === 'B2'">B2</option>
+                  <option value="B3" [selected]="sub.grade === 'B3'">B3</option>
+                  <option value="C4" [selected]="sub.grade === 'C4'">C4</option>
+                  <option value="C5" [selected]="sub.grade === 'C5'">C5</option>
+                  <option value="C6" [selected]="sub.grade === 'C6'">C6</option>
+                  <option value="D7" [selected]="sub.grade === 'D7'">D7</option>
+                  <option value="E8" [selected]="sub.grade === 'E8'">E8</option>
+                  <option value="F9" [selected]="sub.grade === 'F9'">F9</option>
+                </select>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveOlevel()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- JAMB -->
+  <div class="accordion-section">
+    <div class="accordion-header header-yellow" (click)="toggleSection('jamb')">
+      <span>JAMB</span>
+      <span class="accordion-icon">{{ isSectionOpen('jamb') ? '▲' : '▼' }}</span>
+    </div>
+    @if (isSectionOpen('jamb')) {
+    <div class="accordion-body">
+      @if (!isEditing('jamb')) {
+      <div class="section-toolbar">
+        <button class="btn-edit-section" (click)="startEditing('jamb')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="13"
+            height="13"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+          Edit
+        </button>
+      </div>
+      @if (hasData(jambData())) {
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">JAMB Reg Number</span
+          ><span class="info-value highlight">{{ jambData().regNumber || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Year</span
+          ><span class="info-value highlight">{{ jambData().year || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Aggregate Score</span
+          ><span class="info-value highlight">{{ jambData().score || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Course Applied</span
+          ><span class="info-value highlight">{{ jambData().course || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Institution Applied</span
+          ><span class="info-value highlight">{{ jambData().institution || 'N/A' }}</span>
+        </div>
+      </div>
+      } @else {
+      <p class="empty-section-text">No JAMB information provided yet. Click Edit to add.</p>
+      } } @else {
+      <div class="edit-form">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">JAMB Registration Number</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="JAMB reg number"
+              [value]="jambForm().regNumber"
+              (input)="jambForm.set({...jambForm(), regNumber: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year of Examination</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. 2023"
+              [value]="jambForm().year"
+              (input)="jambForm.set({...jambForm(), year: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aggregate Score</label>
+            <input
+              type="number"
+              class="form-control"
+              placeholder="e.g. 280"
+              [value]="jambForm().score"
+              (input)="jambForm.set({...jambForm(), score: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">First Choice of Course</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Course name"
+              [value]="jambForm().course"
+              (input)="jambForm.set({...jambForm(), course: $any($event.target).value})"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">First Choice of Institution</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Institution name"
+              [value]="jambForm().institution"
+              (input)="jambForm.set({...jambForm(), institution: $any($event.target).value})"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveJamb()">Save</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
   </div>
 </div>

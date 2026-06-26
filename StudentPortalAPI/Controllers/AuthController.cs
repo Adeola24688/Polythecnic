@@ -58,6 +58,26 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("upload-photo")]
+    public async Task<IActionResult> UploadPhoto(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest(new { message = "No file uploaded" });
+
+        var studentId = GetStudentId();
+        try
+        {
+            var result = await _authService.UploadProfilePhotoAsync(studentId, file);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [Authorize]
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {

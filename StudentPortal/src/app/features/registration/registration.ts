@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { StudentService } from '../../core/services/student.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Course, CourseRegistration } from '../../shared/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-registration',
@@ -15,12 +16,33 @@ export class CourseRegistrationComponent implements OnInit {
 
   readonly student = this.authService.currentUser;
 
-  // States
+  // Tabs
+  readonly activeTab = signal<'register' | 'report'>('register');
+
+  // Left panel selection
+  readonly selectedLevel = signal<string>('ND I');
+  readonly selectedSemester = signal<string>('First');
+
+  // Computed display values
+  readonly photoUrl = computed<string | null>(() => {
+    const photo = this.student()?.profilePhoto;
+    if (!photo) return null;
+    if (photo.startsWith('http')) return photo;
+    return `${environment.baseUrl}${photo}`;
+  });
+
+  readonly fullName = computed(() => {
+    const s = this.student();
+    return s ? `${s.lastName} ${s.firstName} ${s.middleName || ''}`.trim() : '';
+  });
+
+  // Course data
   readonly availableCourses = signal<Course[]>([]);
   readonly registeredRegistrations = signal<CourseRegistration[]>([]);
   readonly selectedCourseIds = signal<number[]>([]);
   readonly selectedCredits = signal(0);
 
+  // Loading / action states
   readonly loadingAvailable = signal(true);
   readonly loadingRegistered = signal(true);
   readonly registering = signal(false);
@@ -28,12 +50,36 @@ export class CourseRegistrationComponent implements OnInit {
   readonly successMessage = signal<string | null>(null);
   readonly errorMessage = signal<string | null>(null);
 
-  readonly totalRegisteredCredits = computed(() => {
-    return this.registeredRegistrations().reduce((acc, curr) => acc + curr.creditUnit, 0);
-  });
+  readonly totalRegisteredCredits = computed(() =>
+    this.registeredRegistrations().reduce((acc, r) => acc + r.creditUnit, 0)
+  );
 
   ngOnInit(): void {
+    const s = this.student();
+    if (s) {
+      const level = s.level || '100';
+      this.selectedLevel.set(level === '100' ? 'ND I' : 'ND II');
+      this.selectedSemester.set(s.semester || 'First');
+    }
     this.loadData();
+  }
+
+  selectSemester(level: string, semester: string): void {
+    this.selectedLevel.set(level);
+    this.selectedSemester.set(semester);
+    this.selectedCourseIds.set([]);
+    this.selectedCredits.set(0);
+    this.successMessage.set(null);
+    this.errorMessage.set(null);
+    this.loadData();
+  }
+
+  isSelectedSemester(level: string, semester: string): boolean {
+    return this.selectedLevel() === level && this.selectedSemester() === semester;
+  }
+
+  hasRegistrations(level: string, semester: string): boolean {
+    return this.isSelectedSemester(level, semester) && this.registeredRegistrations().length > 0;
   }
 
   loadData(): void {
@@ -41,10 +87,11 @@ export class CourseRegistrationComponent implements OnInit {
     if (!s) return;
 
     const session = s.session || '2024/2025';
-    const semester = s.semester || 'Second';
+    const semester = this.selectedSemester();
+    const numericLevel = this.selectedLevel() === 'ND I' ? '100' : '200';
 
     this.loadingAvailable.set(true);
-    this.studentService.getAvailableCourses(s.department, s.level, semester).subscribe({
+    this.studentService.getAvailableCourses(s.department, numericLevel, semester).subscribe({
       next: (courses) => {
         this.availableCourses.set(courses);
         this.loadingAvailable.set(false);
@@ -67,18 +114,16 @@ export class CourseRegistrationComponent implements OnInit {
   }
 
   toggleCourseSelection(course: Course): void {
-    const currentSelected = [...this.selectedCourseIds()];
-    const index = currentSelected.indexOf(course.id);
-
+    const current = [...this.selectedCourseIds()];
+    const index = current.indexOf(course.id);
     if (index > -1) {
-      currentSelected.splice(index, 1);
+      current.splice(index, 1);
       this.selectedCredits.set(this.selectedCredits() - course.creditUnit);
     } else {
-      currentSelected.push(course.id);
+      current.push(course.id);
       this.selectedCredits.set(this.selectedCredits() + course.creditUnit);
     }
-
-    this.selectedCourseIds.set(currentSelected);
+    this.selectedCourseIds.set(current);
   }
 
   registerSelectedCourses(): void {
@@ -90,7 +135,7 @@ export class CourseRegistrationComponent implements OnInit {
     this.errorMessage.set(null);
 
     const session = s.session || '2024/2025';
-    const semester = s.semester || 'Second';
+    const semester = this.selectedSemester();
 
     this.studentService.registerCourses(this.selectedCourseIds(), session, semester).subscribe({
       next: (res) => {
@@ -109,7 +154,6 @@ export class CourseRegistrationComponent implements OnInit {
 
   unregisterCourse(registrationId: number): void {
     if (!confirm('Are you sure you want to unregister this course?')) return;
-
     this.successMessage.set(null);
     this.errorMessage.set(null);
 
@@ -122,6 +166,10 @@ export class CourseRegistrationComponent implements OnInit {
         this.errorMessage.set(err.error?.message || 'Failed to unregister course.');
       },
     });
+  }
+
+  printForm(): void {
+    window.print();
   }
 }
 export default CourseRegistrationComponent;

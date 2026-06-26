@@ -18,7 +18,6 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiBaseUrl}/auth`;
 
-  // Signals for reactive state
   readonly currentUser = signal<Student | null>(this.getStoredUser());
   readonly token = signal<string | null>(localStorage.getItem('token'));
 
@@ -47,6 +46,17 @@ export class AuthService {
 
   updateProfile(biodata: UpdateBiodataDto): Observable<Student> {
     return this.http.put<Student>(`${this.apiUrl}/biodata`, biodata).pipe(
+      tap((updatedStudent) => {
+        localStorage.setItem('student', JSON.stringify(updatedStudent));
+        this.currentUser.set(updatedStudent);
+      }),
+    );
+  }
+
+  uploadPhoto(file: File): Observable<Student> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<Student>(`${this.apiUrl}/upload-photo`, formData).pipe(
       tap((updatedStudent) => {
         localStorage.setItem('student', JSON.stringify(updatedStudent));
         this.currentUser.set(updatedStudent);

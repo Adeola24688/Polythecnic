@@ -76,3 +76,59 @@
   border-radius: 4px;
   font-size: 0.8rem;
 }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .card-pay-cta {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .cta-amount {
+    font-size: 2rem;
+  }
+
+  .btn-pay-now {
+    width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-pay-cta {
+    padding: 1.25rem;
+  }
+
+  .cta-label {
+    font-size: 0.8rem;
+  }
+
+  .cta-amount {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .btn-pay-now {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .info-card-status h3 {
+    font-size: 0.85rem;
+  }
+
+  .support-text {
+    font-size: 0.75rem;
+  }
+
+  .ref-code {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .cta-amount {
+    font-size: 1.6rem;
+  }
+}

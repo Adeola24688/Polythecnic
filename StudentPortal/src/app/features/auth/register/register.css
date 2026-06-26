@@ -74,7 +74,7 @@
 }
 
 .login-links a {
-  color: #ef4444;
+  color: green;
   text-decoration: none;
   font-weight: 600;
 }
@@ -83,8 +83,99 @@
   text-decoration: underline;
 }
 
-@media (max-width: 600px) {
-  .register-card {
+@media (max-width: 768px) {
+  .register-wrapper {
     padding: 1.5rem;
+  }
+
+  .register-card {
+    padding: 2rem 1.75rem;
+  }
+
+  .portal-title {
+    font-size: 1.3rem;
+  }
+
+  .portal-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .register-wrapper {
+    padding: 1.25rem;
+  }
+
+  .register-card {
+    padding: 1.75rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .card-logo img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .portal-title {
+    font-size: 1.2rem;
+  }
+
+  .portal-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .form-label {
+    font-size: 0.82rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .btn-block {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .login-links {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-wrapper {
+    padding: 1rem;
+  }
+
+  .register-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .card-logo img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .portal-title {
+    font-size: 1.15rem;
+  }
+
+  .portal-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .register-wrapper {
+    padding: 0.85rem;
+  }
+
+  .register-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .portal-title {
+    font-size: 1.1rem;
   }
 }

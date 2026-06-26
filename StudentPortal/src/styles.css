@@ -50,12 +50,18 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   font-family: var(--font-family);
   background-color: var(--bg-main);
   color: var(--text-dark);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* Scrollbar */
@@ -78,6 +84,7 @@ body {
 .portal-container {
   display: flex;
   min-height: 100vh;
+  width: 100%;
 }
 
 .portal-content {
@@ -85,12 +92,15 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
   overflow-x: hidden;
 }
 
 .main-body {
   padding: 2rem;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Cards & Layout */
@@ -101,6 +111,8 @@ body {
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-normal);
+  width: 100%;
+  max-width: 100%;
 }
 
 .card:hover {
@@ -258,6 +270,8 @@ h6 {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--bg-card);
+  width: 100%;
+  max-width: 100%;
 }
 
 table {
@@ -326,20 +340,23 @@ tr:hover td {
 /* Grid helper */
 .grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+  width: 100%;
 }
 
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
+  width: 100%;
 }
 
 .grid-4 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
+  width: 100%;
 }
 
 /* Shimmer/Skeleton Loading */
@@ -358,9 +375,176 @@ tr:hover td {
   }
 }
 
+/* Global media safety */
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent layout overflow on small screens */
+* {
+  min-width: 0;
+}
+
+/* Form controls should never overflow their containers */
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+
+.text-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Tables/cards should not overflow */
+.table-container,
+.result-card,
+.card,
+.reg-container,
+.clearance-container,
+.biodata-container,
+.registration-wrapper {
+  max-width: 100%;
+}
+
+/* Default responsive page container (safe fallback) */
+[class*='container']:not(.portal-container),
+[class*='wrapper']:not(.login-wrapper):not(.register-wrapper) {
+  max-width: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Wide screens - optimize spacing */
+@media (min-width: 1600px) {
+  .main-body {
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .main-body {
+    padding: 2rem;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
 /* Responsive */
+@media (max-width: 1024px) {
+  .main-body {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .card {
+    padding: 1.35rem;
+  }
+}
+
 @media (max-width: 768px) {
   .main-body {
     padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.65rem 1.25rem;
+  }
+
+  th {
+    font-size: 0.8rem;
+    padding: 0.85rem 1rem;
+  }
+
+  td {
+    font-size: 0.9rem;
+    padding: 0.85rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-body {
+    padding: 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 0.85rem;
+    width: auto;
+  }
+
+  th {
+    font-size: 0.75rem;
+    padding: 0.65rem 0.5rem;
+  }
+
+  td {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.5rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }

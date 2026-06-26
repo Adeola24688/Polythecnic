@@ -1,27 +1,51 @@
 <div class="portal-container">
+  <!-- Mobile Backdrop Overlay -->
+  <div class="sidebar-backdrop" [class.show]="sidebarOpen()" (click)="sidebarOpen.set(false)"></div>
+
   <!-- Sidebar -->
   <aside class="portal-sidebar" [class.open]="sidebarOpen()">
     <div class="sidebar-brand">
-      <img
-        src="https://student.safpoly.org/images/logo.png"
-        alt="SAF Logo"
-        class="brand-logo"
-        onerror="this.src = 'https://i.ibb.co/1n5bWb7/safpoly.png'"
-      />
-      <div class="brand-details">
-        <span class="brand-name">SAF POLY</span>
-        <span class="brand-tag">Student Portal</span>
+      <button class="sidebar-close-btn" (click)="sidebarOpen.set(false)" aria-label="Close Sidebar">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="24"
+          height="24"
+        >
+          <path
+            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+          />
+        </svg>
+      </button>
+      <div class="brand-content">
+        <img src="pasted.png" alt="SAF Logo" class="brand-logo" />
+        <div class="brand-details">
+          <span class="brand-name"> POLYTECHNIC</span>
+          <span class="brand-tag">Student Portal</span>
+        </div>
       </div>
     </div>
 
     <!-- Student Quick Profile Info -->
     <div class="sidebar-profile">
       <div class="profile-avatar-wrapper">
-        <img
-          [src]="student()?.profilePhoto || 'https://i.pravatar.cc/150?img=68'"
-          alt="Profile Photo"
-          class="profile-avatar"
-        />
+        @if (photoUrl()) {
+        <img [src]="photoUrl()!" alt="Profile Photo" class="profile-avatar" />
+        } @else {
+        <div class="profile-avatar profile-avatar-placeholder">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="user-icon-svg-sm"
+          >
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+            />
+          </svg>
+        </div>
+        }
       </div>
       <div class="profile-info">
         <span class="profile-name">{{ student()?.firstName }} {{ student()?.lastName }}</span>
@@ -31,38 +55,153 @@
 
     <!-- Nav Menu -->
     <nav class="sidebar-nav">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">🏠</span>
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+        </span>
         <span class="nav-text">Dashboard</span>
       </a>
 
-      <a routerLink="/biodata" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">👤</span>
+      <a
+        routerLink="/biodata"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Biodata</span>
       </a>
 
-      <a routerLink="/registration" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">📋</span>
+      <a
+        routerLink="/registration"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Registration</span>
       </a>
 
-      <a routerLink="/result" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">📊</span>
+      <a
+        routerLink="/result"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Result</span>
       </a>
 
-      <a routerLink="/clearance" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">✅</span>
+      <a
+        routerLink="/clearance"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+        </span>
         <span class="nav-text">Exam Clearance</span>
       </a>
 
-      <a routerLink="/payments" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">💳</span>
+      <a
+        routerLink="/payments"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Payments</span>
       </a>
 
-      <a routerLink="/settings" routerLinkActive="active" class="nav-item">
-        <span class="nav-icon">⚙️</span>
+      <a
+        routerLink="/settings"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebarOnMobile()"
+      >
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Settings</span>
       </a>
     </nav>
@@ -70,7 +209,19 @@
     <!-- Logout -->
     <div class="sidebar-footer">
       <button class="btn-logout" (click)="onLogout()">
-        <span class="nav-icon">🚪</span>
+        <span class="nav-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+            />
+          </svg>
+        </span>
         <span class="nav-text">Logout</span>
       </button>
     </div>
@@ -86,11 +237,17 @@
           (click)="sidebarOpen.set(!sidebarOpen())"
           aria-label="Toggle Sidebar"
         >
-          ☰
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="24"
+            height="24"
+          >
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
         </button>
-        <div class="header-greeting">
-          Welcome, <strong>{{ student()?.firstName }}</strong>
-        </div>
+        <div class="header-greeting">Welcome, <strong>{{ student()?.firstName }}</strong></div>
       </div>
 
       <div class="header-right">
@@ -99,11 +256,22 @@
           <span class="semester-badge">{{ student()?.semester || 'Second' }} Semester</span>
         </div>
         <div class="user-dropdown">
-          <img
-            [src]="student()?.profilePhoto || 'https://i.pravatar.cc/150?img=68'"
-            alt="User Avatar"
-            class="header-avatar"
-          />
+          @if (photoUrl()) {
+          <img [src]="photoUrl()!" alt="User Avatar" class="header-avatar" />
+          } @else {
+          <div class="header-avatar header-avatar-placeholder">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="user-icon-svg-xs"
+            >
+              <path
+                d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+              />
+            </svg>
+          </div>
+          }
         </div>
       </div>
     </header>

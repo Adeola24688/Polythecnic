@@ -1,107 +1,865 @@
-.courses-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
+/* ── Container ── */
+.reg-container {
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 100%;
 }
 
-.course-selection-item {
-  display: flex;
-  align-items: center;
+.reg-title-row {
+  margin-bottom: 1rem;
+}
+
+.reg-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+/* ── Alerts ── */
+.alert {
   padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--border-color);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* ── Tab nav ── */
+.tab-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab-btn {
+  padding: 0.6rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #f5f5f5;
+  border: none;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  color: #555;
+  transition: all 0.2s;
 }
 
-.course-selection-item:hover {
-  border-color: var(--primary-light);
-  background-color: #f8fafc;
+.tab-btn:first-child {
+  border-right: 1px solid #ddd;
 }
 
-.course-selection-item.selected {
-  border-color: var(--primary-color);
-  background-color: #eff6ff;
+.tab-btn.active {
+  background: #fff;
+  color: #1a237e;
+  font-weight: 600;
 }
 
-.selection-checkbox {
-  margin-right: 1rem;
+.tab-btn:hover:not(.active) {
+  background: #eeeeee;
 }
 
-.selection-checkbox input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+/* ── Layout ── */
+.reg-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
 }
 
-.course-selection-label {
+/* ── Left: Semester navigation ── */
+.semester-nav {
+  min-width: 200px;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.semester-group {
+  border-bottom: 1px solid #ddd;
+}
+
+.semester-group:last-child {
+  border-bottom: none;
+}
+
+.level-header {
+  background: #1a237e;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.semester-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex: 1;
+  padding: 0.6rem 1rem 0.6rem 1.5rem;
+  font-size: 0.85rem;
+  color: #444;
   cursor: pointer;
-  font-size: 0.9rem;
+  border-bottom: 1px solid #eee;
+  transition: background 0.15s;
+}
+
+.semester-item:last-child {
+  border-bottom: none;
+}
+
+.semester-item:hover {
+  background: #f0f4ff;
+}
+
+.semester-item.active {
+  background: #e8eaf6;
+  color: #1a237e;
+  font-weight: 500;
+}
+
+.check {
+  font-size: 0.8rem;
+}
+
+/* ── Right: Main content ── */
+.reg-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Course list ── */
+.courses-list {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.course-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background 0.15s;
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-item:hover {
+  background: #f9f9f9;
+}
+
+.course-item.selected {
+  background: #e8f5e9;
+}
+
+.course-item input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.course-label {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+  font-size: 0.88rem;
 }
 
 .course-code {
-  font-weight: 700;
-  color: var(--primary-color);
+  font-weight: 600;
+  color: #1a237e;
   min-width: 80px;
 }
 
-.course-title {
+.course-name {
   flex: 1;
-  padding: 0 1rem;
-  color: var(--text-dark);
+  color: #333;
 }
 
 .course-unit {
-  font-weight: 600;
-  background-color: #e2e8f0;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  color: #888;
+  font-size: 0.82rem;
+  white-space: nowrap;
 }
 
-.registration-summary {
-  background-color: #f8fafc;
-  padding: 1rem;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-color);
-}
-
-.summary-row {
+/* ── Registration summary ── */
+.reg-summary {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.over-limit {
+  color: #c62828;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #1a237e;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #283593;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Registered courses table ── */
+.registered-section {
+  margin-top: 1.5rem;
+}
+
+.section-heading {
   font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 0.75rem;
 }
 
-.total-units-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  background-color: #f8fafc;
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
 }
 
+.course-table th {
+  background: #f5f5f5;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.course-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.course-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-primary {
+  color: #1a237e;
+}
+
+.btn-remove {
+  background: #fff;
+  border: 1px solid #e53935;
+  color: #e53935;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #ffebee;
+}
+
+.total-units {
+  text-align: right;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.88rem;
+  color: #555;
+  border-top: 1px solid #eee;
+}
+
+/* ── Empty / skeleton ── */
 .empty-state {
+  padding: 2rem;
   text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-muted);
+  color: #999;
   font-size: 0.9rem;
+  border: 1px dashed #ddd;
+  border-radius: 6px;
 }
 
-.mt-1 {
+.skeleton-block {
+  height: 200px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Report tab ── */
+.report-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.carry-over-notice {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #5d4037;
+}
+
+.btn-carry-over {
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── Printable report ── */
+.report-form {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.school-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.school-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.school-info {
+  font-size: 0.85rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.school-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.2rem;
+}
+
+.school-address {
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.school-link {
+  color: #c62828;
+}
+
+.report-section {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.report-section:last-child {
+  border-bottom: none;
+}
+
+.report-section-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #555;
+  border-left: 3px solid #1a237e;
+  padding-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.report-personal {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.report-photo {
+  width: 90px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Placeholder icon when no photo uploaded */
+.report-photo-placeholder {
+  width: 90px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f4f8;
+}
+
+.report-photo-placeholder .user-icon-svg {
+  width: 52px;
+  height: 52px;
+  color: #90a4ae;
+}
+
+.report-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem 1rem;
+  flex: 1;
+}
+
+.ri-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ri-label {
+  font-size: 0.72rem;
+  color: #888;
+}
+
+.ri-value {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+.no-courses {
+  color: #999;
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+/* ── Signature section ── */
+.signature-section {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sig-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.sig-label {
+  min-width: 160px;
+  color: #333;
+}
+
+.sig-line {
+  flex: 1;
+  border-bottom: 1px dotted #999;
+  height: 1px;
+}
+
+.sig-date {
+  white-space: nowrap;
+  color: #555;
+}
+
+/* ── Print note ── */
+.print-note {
+  padding: 1rem 1.5rem;
+  font-size: 0.82rem;
+  color: #333;
+  border-top: 1px solid #eee;
+}
+
+.print-note-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 1rem;
   margin-top: 0.5rem;
 }
-.mt-2 {
-  margin-top: 1.5rem;
+
+/* ── Print button ── */
+.btn-print {
+  width: 100%;
+  padding: 0.85rem;
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+  letter-spacing: 0.5px;
 }
-.mb-2 {
-  margin-bottom: 1.5rem;
+
+.btn-print:hover {
+  background: #283593;
+}
+
+/* ── Print media query ── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .reg-container {
+    padding: 0;
+  }
+
+  .reg-layout {
+    display: block;
+  }
+
+  .reg-main {
+    width: 100%;
+  }
+
+  .report-form {
+    border: none;
+  }
+
+  .course-table th,
+  .course-table td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.82rem;
+  }
+}
+
+/* ── Wide screens ── */
+@media (min-width: 1200px) {
+  .semester-nav {
+    min-width: 220px;
+    width: 220px;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .reg-container {
+    padding: 1.5rem;
+  }
+
+  .semester-nav {
+    min-width: 200px;
+    width: 200px;
+  }
+
+  .school-header {
+    padding: 1.25rem;
+  }
+
+  .school-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .report-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .reg-layout {
+    flex-direction: column;
+  }
+
+  .semester-nav {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .report-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tab-nav {
+    width: 100%;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .reg-container {
+    padding: 1rem;
+  }
+
+  .tab-nav {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .tab-btn {
+    font-size: 0.85rem;
+    padding: 0.55rem 1rem;
+  }
+
+  .semester-nav {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .course-item {
+    padding: 0.6rem 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .course-label {
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+  }
+
+  .course-code {
+    min-width: 70px;
+  }
+
+  .course-unit {
+    font-size: 0.8rem;
+  }
+
+  .reg-summary {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .course-table {
+    font-size: 0.85rem;
+  }
+
+  .course-table th,
+  .course-table td {
+    padding: 0.55rem 0.65rem;
+  }
+
+  .report-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .print-note-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .school-header {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .school-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .school-name {
+    font-size: 1rem;
+  }
+
+  .report-section {
+    padding: 0.85rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .reg-container {
+    padding: 0.75rem;
+  }
+
+  .tab-nav {
+    flex-direction: column;
+    border-radius: 6px;
+  }
+
+  .tab-btn {
+    width: 100%;
+    border-right: none !important;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tab-btn:last-child {
+    border-bottom: none;
+  }
+
+  .semester-item {
+    font-size: 0.82rem;
+    padding: 0.55rem 0.85rem 0.55rem 1.25rem;
+  }
+
+  .level-header {
+    font-size: 0.82rem;
+    padding: 0.45rem 0.85rem;
+  }
+
+  .course-item {
+    padding: 0.55rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .course-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+  }
+
+  .course-code {
+    min-width: auto;
+  }
+
+  .course-table {
+    font-size: 0.8rem;
+  }
+
+  .course-table th,
+  .course-table td {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.6rem;
+  }
+
+  .btn-remove {
+    width: auto;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .report-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .ri-label {
+    font-size: 0.7rem;
+  }
+
+  .ri-value {
+    font-size: 0.85rem;
+  }
+
+  .report-personal {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .school-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0.75rem;
+  }
+
+  .sig-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .sig-label {
+    min-width: auto;
+  }
+
+  .sig-line {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .reg-title {
+    font-size: 0.95rem;
+  }
+
+  .semester-item {
+    font-size: 0.78rem;
+  }
+
+  .course-label {
+    font-size: 0.78rem;
+  }
+
+  .reg-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .course-table {
+    font-size: 0.75rem;
+  }
 }

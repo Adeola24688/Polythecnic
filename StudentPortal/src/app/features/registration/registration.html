@@ -1,113 +1,417 @@
-<div class="registration-container">
-  <div class="page-header">
-    <h1 class="page-title">Course Registration</h1>
-    <p class="text-muted">Register courses for the current semester (Maximum 24 credits)</p>
+<div class="reg-container">
+
+  <div class="reg-title-row">
+    <h2 class="reg-title">COURSE REGISTRATION & REPORT</h2>
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert-success">{{ successMessage() }}</div>
+  <div class="alert alert-success">{{ successMessage() }}</div>
   }
   @if (errorMessage()) {
-    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  <div class="alert alert-danger">{{ errorMessage() }}</div>
   }
 
-  <div class="grid-2">
-    <!-- Available Courses Selection -->
-    <div class="card">
-      <h2 class="card-title">📝 Available Courses</h2>
-      <p class="text-muted mb-2">Check the boxes next to the courses you wish to register.</p>
+  <!-- Tab navigation -->
+  <div class="tab-nav no-print">
+    <button class="tab-btn" [class.active]="activeTab() === 'register'" (click)="activeTab.set('register')">
+      Course Registration
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'report'" (click)="activeTab.set('report')">
+      Registration Report
+    </button>
+  </div>
 
-      @if (loadingAvailable()) {
-        <div class="skeleton" style="height: 200px; border-radius: 8px"></div>
-      } @else if (availableCourses().length === 0) {
-        <div class="empty-state">No available courses found for your department and level.</div>
-      } @else {
+  <div class="reg-layout">
+
+    <!-- Left: Semester navigation tree -->
+    <div class="semester-nav no-print">
+      <div class="semester-group">
+        <div class="level-header">ND I</div>
+        <div class="semester-item" [class.active]="isSelectedSemester('ND I', 'First')"
+          (click)="selectSemester('ND I', 'First')">
+          <span>First Semester</span>
+          @if (hasRegistrations('ND I', 'First')) {
+          <span class="check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="color:#22c55e">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </span>
+          }
+        </div>
+        <div class="semester-item" [class.active]="isSelectedSemester('ND I', 'Second')"
+          (click)="selectSemester('ND I', 'Second')">
+          <span>Second Semester</span>
+          @if (hasRegistrations('ND I', 'Second')) {
+          <span class="check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="color:#22c55e">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </span>
+          }
+        </div>
+      </div>
+
+      <div class="semester-group">
+        <div class="level-header">ND II</div>
+        <div class="semester-item" [class.active]="isSelectedSemester('ND II', 'First')"
+          (click)="selectSemester('ND II', 'First')">
+          <span>First Semester</span>
+          @if (hasRegistrations('ND II', 'First')) {
+          <span class="check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="color:#22c55e">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </span>
+          }
+        </div>
+        <div class="semester-item" [class.active]="isSelectedSemester('ND II', 'Second')"
+          (click)="selectSemester('ND II', 'Second')">
+          <span>Second Semester</span>
+          @if (hasRegistrations('ND II', 'Second')) {
+          <span class="check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="color:#22c55e">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Main content -->
+    <div class="reg-main">
+
+      <!-- ── COURSE REGISTRATION TAB ── -->
+      @if (activeTab() === 'register') {
+
+      <!-- Carry over notice -->
+      <div class="carry-over-notice no-print">
+        <span>Add your carry over course here! (If not added before)</span>
+        <button class="btn-carry-over">Add Carry Over</button>
+      </div>
+
+      <!-- Available courses to select -->
+      <div class="no-print">
+        @if (loadingAvailable()) {
+        <div class="skeleton-block"></div>
+        } @else if (availableCourses().length === 0) {
+        <div class="empty-state">
+          No available courses found for {{ selectedLevel() }} – {{ selectedSemester() }} Semester.
+        </div>
+        } @else {
         <div class="courses-list">
           @for (course of availableCourses(); track course.id) {
-            <div class="course-selection-item" [class.selected]="isCourseSelected(course.id)">
-              <div class="selection-checkbox">
-                <input
-                  type="checkbox"
-                  [id]="'course-' + course.id"
-                  [checked]="isCourseSelected(course.id)"
-                  (change)="toggleCourseSelection(course)"
-                />
-              </div>
-              <label [for]="'course-' + course.id" class="course-selection-label">
-                <span class="course-code">{{ course.courseCode }}</span>
-                <span class="course-title">{{ course.courseTitle }}</span>
-                <span class="course-unit">{{ course.creditUnit }} Units</span>
-              </label>
-            </div>
+          <div class="course-item" [class.selected]="isCourseSelected(course.id)">
+            <input type="checkbox" [id]="'c-' + course.id" [checked]="isCourseSelected(course.id)"
+              (change)="toggleCourseSelection(course)" />
+            <label [for]="'c-' + course.id" class="course-label">
+              <span class="course-code">{{ course.courseCode }}</span>
+              <span class="course-name">{{ course.courseTitle }}</span>
+              <span class="course-unit">{{ course.creditUnit }} Units</span>
+            </label>
+          </div>
           }
         </div>
 
-        <div class="registration-summary mt-2">
-          <div class="summary-row">
-            <span>Selected Credit Units:</span>
-            <strong [class.text-danger]="selectedCredits() > 24"
-              >{{ selectedCredits() }} / 24 Units</strong
-            >
-          </div>
-          <button
-            class="btn btn-primary btn-block mt-1"
+        <div class="reg-summary">
+          <span>Selected:
+            <strong [class.over-limit]="selectedCredits() > 24">
+              {{ selectedCredits() }} / 24 Units
+            </strong>
+          </span>
+          <button class="btn btn-primary"
             [disabled]="selectedCredits() === 0 || selectedCredits() > 24 || registering()"
-            (click)="registerSelectedCourses()"
-          >
-            @if (registering()) {
-              Registering...
-            } @else {
-              Register Selected Courses
-            }
+            (click)="registerSelectedCourses()">
+            {{ registering() ? 'Registering...' : 'Register Selected Courses' }}
           </button>
         </div>
-      }
-    </div>
+        }
+      </div>
 
-    <!-- Registered Courses List -->
-    <div class="card">
-      <h2 class="card-title">✅ Registered Courses</h2>
-      <p class="text-muted mb-2">Courses registered for the current semester.</p>
+      <!-- Printable report form (also shown in Course Registration tab) -->
+      <div class="report-wrapper">
+        <div class="report-form" id="printArea">
 
-      @if (loadingRegistered()) {
-        <div class="skeleton" style="height: 200px; border-radius: 8px"></div>
-      } @else if (registeredRegistrations().length === 0) {
-        <div class="empty-state">You have not registered any courses for this semester yet.</div>
-      } @else {
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Title</th>
-                <th>Units</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (reg of registeredRegistrations(); track reg.id) {
+          <!-- School header -->
+          <div class="school-header">
+            <img src="pasted.png" alt="School Logo" class="school-logo" />
+            <div class="school-info">
+              <h2 class="school-name"> POLYTECHNIC</h2>
+              <p class="school-address">KM.7, ISEYIN-OYO ROAD, IDI-ORI, ISEYIN. OYO STATE.</p>
+              <p>Email Address: <span class="school-link">admissionspolythecnic99@gmail.com</span></p>
+              <p>Website Address: <span class="school-link">www.polytechnic.edu.ng</span></p>
+              <p>Contact No: <span class="school-link">081-45892973</span></p>
+            </div>
+          </div>
+
+          <!-- Personal information -->
+          <div class="report-section">
+            <div class="report-section-label">Personal Information</div>
+            <div class="report-personal">
+              @if (photoUrl()) {
+                <img [src]="photoUrl()!" alt="Student Photo" class="report-photo" />
+              } @else {
+                <div class="report-photo-placeholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="user-icon-svg">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                  </svg>
+                </div>
+              }
+              <div class="report-info-grid">
+                <div class="ri-item">
+                  <span class="ri-label">Fullname</span>
+                  <span class="ri-value">{{ fullName() }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Matric Number</span>
+                  <span class="ri-value">{{ student()?.matricNumber }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Admission Year</span>
+                  <span class="ri-value">{{ (student()?.session ?? '').split('/')[0] || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Gender</span>
+                  <span class="ri-value">{{ student()?.gender || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Faculty</span>
+                  <span class="ri-value">{{ student()?.faculty || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Department</span>
+                  <span class="ri-value">{{ student()?.department || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Programme</span>
+                  <span class="ri-value">{{ selectedLevel() }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Level</span>
+                  <span class="ri-value">{{ selectedLevel() === 'ND I' ? 'I' : 'II' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registered course table -->
+          <div class="report-section">
+            <div class="report-section-label">
+              {{ selectedLevel() }} ({{ selectedSemester() }} Semester) Course Forms
+            </div>
+
+            @if (loadingRegistered()) {
+            <p class="loading-text">Loading courses...</p>
+            } @else if (registeredRegistrations().length === 0) {
+            <p class="no-courses">No courses registered for this semester yet.</p>
+            } @else {
+            <table class="course-table">
+              <thead>
                 <tr>
-                  <td>
-                    <strong class="text-primary">{{ reg.courseCode }}</strong>
-                  </td>
+                  <th>S/N</th>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Unit</th>
+                  <th class="no-print">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (reg of registeredRegistrations(); track reg.id; let i = $index) {
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ reg.courseCode }}</td>
                   <td>{{ reg.courseTitle }}</td>
                   <td>{{ reg.creditUnit }}</td>
-                  <td>
-                    <button class="btn btn-danger btn-sm" (click)="unregisterCourse(reg.id)">
-                      Remove
-                    </button>
+                  <td class="no-print">
+                    <button class="btn-remove" (click)="unregisterCourse(reg.id)">Remove</button>
                   </td>
                 </tr>
-              }
-            </tbody>
-          </table>
+                }
+              </tbody>
+            </table>
+            <div class="total-units">
+              Total Units: <strong>{{ totalRegisteredCredits() }}</strong>
+            </div>
+            }
+          </div>
+
+          <!-- Signature section -->
+          <div class="signature-section">
+            <div class="sig-row">
+              <span class="sig-label">Student's Signature</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Exam and Records</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Academic Adviser</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Head of Department</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+          </div>
+
+          <!-- Print note -->
+          <div class="print-note">
+            <p><strong><u>NOTE: 4 Copies to be printed:</u></strong></p>
+            <div class="print-note-grid">
+              <span>Original Copy to be retained by the student</span>
+              <span>Submit one copy to the Faculty</span>
+              <span>Submit one copy to the Academic Officer</span>
+              <span>Submit one copy to the Head of Department</span>
+            </div>
+          </div>
         </div>
 
-        <div class="total-units-footer mt-2">
-          <span>Total Registered Credit Units:</span>
-          <strong>{{ totalRegisteredCredits() }} Units</strong>
-        </div>
+        <!-- Print button -->
+        <button class="btn-print no-print" (click)="printForm()">Print Form</button>
+      </div>
       }
+
+      <!-- ── REGISTRATION REPORT TAB (clean print view) ── -->
+      @if (activeTab() === 'report') {
+      <div class="report-wrapper">
+        <div class="report-form" id="printArea2">
+
+          <div class="school-header">
+            <img src="pasted.png" alt="School Logo" class="school-logo" />
+            <div class="school-info">
+              <h2 class="school-name">POLYTECHNIC</h2>
+              <p class="school-address">KM.7, ISEYIN-OYO ROAD, IDI-ORI, ISEYIN. OYO STATE.</p>
+              <p>Email Address: <span class="school-link">admissions&#64;polythecnic.edu.ng</span></p>
+              <p>Website Address: <span class="school-link">www.polythecnic.edu.ng</span></p>
+              <p>Contact No: <span class="school-link">081-45892973</span></p>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <div class="report-section-label">Personal Information</div>
+            <div class="report-personal">
+              @if (photoUrl()) {
+                <img [src]="photoUrl()!" alt="Student Photo" class="report-photo" />
+              } @else {
+                <div class="report-photo-placeholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="user-icon-svg">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                  </svg>
+                </div>
+              }
+              <div class="report-info-grid">
+                <div class="ri-item">
+                  <span class="ri-label">Fullname</span>
+                  <span class="ri-value">{{ fullName() }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Matric Number</span>
+                  <span class="ri-value">{{ student()?.matricNumber }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Admission Year</span>
+                  <span class="ri-value">{{ (student()?.session ?? '').split('/')[0] || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Gender</span>
+                  <span class="ri-value">{{ student()?.gender || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Faculty</span>
+                  <span class="ri-value">{{ student()?.faculty || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Department</span>
+                  <span class="ri-value">{{ student()?.department || 'N/A' }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Programme</span>
+                  <span class="ri-value">{{ selectedLevel() }}</span>
+                </div>
+                <div class="ri-item">
+                  <span class="ri-label">Level</span>
+                  <span class="ri-value">{{ selectedLevel() === 'ND I' ? 'I' : 'II' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <div class="report-section-label">
+              {{ selectedLevel() }} ({{ selectedSemester() }} Semester) Course Forms
+            </div>
+            @if (registeredRegistrations().length === 0) {
+            <p class="no-courses">No courses registered for this semester yet.</p>
+            } @else {
+            <table class="course-table">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (reg of registeredRegistrations(); track reg.id; let i = $index) {
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ reg.courseCode }}</td>
+                  <td>{{ reg.courseTitle }}</td>
+                  <td>{{ reg.creditUnit }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+            <div class="total-units">
+              Total Units: <strong>{{ totalRegisteredCredits() }}</strong>
+            </div>
+            }
+          </div>
+
+          <div class="signature-section">
+            <div class="sig-row">
+              <span class="sig-label">Student's Signature</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Exam and Records</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Academic Adviser</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+            <div class="sig-row">
+              <span class="sig-label">Head of Department</span>
+              <span class="sig-line"></span>
+              <span class="sig-date">Date: ..........................</span>
+            </div>
+          </div>
+
+          <div class="print-note">
+            <p><strong><u>NOTE: 4 Copies to be printed:</u></strong></p>
+            <div class="print-note-grid">
+              <span>Original Copy to be retained by the student</span>
+              <span>Submit one copy to the Faculty</span>
+              <span>Submit one copy to the Academic Officer</span>
+              <span>Submit one copy to the Head of Department</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-print no-print" (click)="printForm()">Print Form</button>
+      </div>
+      }
+
     </div>
   </div>
 </div>

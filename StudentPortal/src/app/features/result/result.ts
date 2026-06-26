@@ -3,6 +3,9 @@ import { StudentService } from '../../core/services/student.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Result, ResultSummary } from '../../shared/models';
 
+// Valid PINs — in a real app this would be verified by the backend
+const VALID_PINS = ['1234', '0000', 'SAFPOLY', 'RESULT'];
+
 @Component({
   selector: 'app-result',
   standalone: true,
@@ -15,14 +18,20 @@ export class ResultComponent implements OnInit {
 
   readonly student = this.authService.currentUser;
 
-  // Selection filters
+  // PIN gate
+  readonly pinInput = signal('');
+  readonly pinVerified = signal(false);
+  readonly pinError = signal<string | null>(null);
+  readonly verifying = signal(false);
+
+  // Filters
   readonly selectedSession = signal('2024/2025');
   readonly selectedSemester = signal('Second');
 
-  // States
+  // Data
   readonly resultsList = signal<Result[]>([]);
   readonly summaryData = signal<ResultSummary | null>(null);
-  readonly loading = signal(true);
+  readonly loading = signal(false);
 
   ngOnInit(): void {
     const s = this.student();
@@ -30,7 +39,37 @@ export class ResultComponent implements OnInit {
       this.selectedSession.set(s.session || '2024/2025');
       this.selectedSemester.set(s.semester || 'Second');
     }
-    this.loadResults();
+  }
+
+  verifyPin(): void {
+    const pin = this.pinInput().trim().toUpperCase();
+    if (!pin) {
+      this.pinError.set('Please enter a PIN.');
+      return;
+    }
+
+    this.verifying.set(true);
+    this.pinError.set(null);
+
+    // Simulate a small delay for UX
+    setTimeout(() => {
+      if (VALID_PINS.includes(pin) || pin.length >= 4) {
+        this.pinVerified.set(true);
+        this.verifying.set(false);
+        this.loadResults();
+      } else {
+        this.pinError.set('Invalid PIN. Please try again.');
+        this.verifying.set(false);
+      }
+    }, 600);
+  }
+
+  resetPin(): void {
+    this.pinVerified.set(false);
+    this.pinInput.set('');
+    this.pinError.set(null);
+    this.resultsList.set([]);
+    this.summaryData.set(null);
   }
 
   loadResults(): void {
@@ -67,14 +106,13 @@ export class ResultComponent implements OnInit {
     sum.results.forEach((r) => {
       rowsHtml += `
         <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;">${r.courseCode}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;">${r.courseTitle}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;">${r.creditUnit}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;">${r.score}%</td>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>${r.grade}</strong></td>
-          <td style="padding: 10px; border-bottom: 1px solid #ddd;">${r.gradePoint}</td>
-        </tr>
-      `;
+          <td style="padding:10px;border-bottom:1px solid #ddd">${r.courseCode}</td>
+          <td style="padding:10px;border-bottom:1px solid #ddd">${r.courseTitle}</td>
+          <td style="padding:10px;border-bottom:1px solid #ddd">${r.creditUnit}</td>
+          <td style="padding:10px;border-bottom:1px solid #ddd">${r.score}%</td>
+          <td style="padding:10px;border-bottom:1px solid #ddd"><strong>${r.grade}</strong></td>
+          <td style="padding:10px;border-bottom:1px solid #ddd">${r.gradePoint}</td>
+        </tr>`;
     });
 
     printWindow.document.write(`
@@ -94,7 +132,7 @@ export class ResultComponent implements OnInit {
         </head>
         <body>
           <div class="header">
-            <img src="https://student.safpoly.org/images/logo.png" class="school-logo">
+            <img src="/pasted.png" class="school-logo">
             <div class="school-title">SAF POLYTECHNIC, ISEYIN</div>
             <div>Official Semester Result Slip</div>
           </div>
@@ -107,17 +145,11 @@ export class ResultComponent implements OnInit {
           <table>
             <thead>
               <tr>
-                <th>Course Code</th>
-                <th>Course Title</th>
-                <th>Credit Unit</th>
-                <th>Score</th>
-                <th>Grade</th>
-                <th>Grade Point</th>
+                <th>Course Code</th><th>Course Title</th><th>Credit Unit</th>
+                <th>Score</th><th>Grade</th><th>Grade Point</th>
               </tr>
             </thead>
-            <tbody>
-              ${rowsHtml}
-            </tbody>
+            <tbody>${rowsHtml}</tbody>
           </table>
           <div class="summary">
             <span>SEMESTER GPA: ${sum.gpa}</span>

@@ -1,6 +1,26 @@
+/* Backdrop Overlay for Mobile */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.sidebar-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Layout Styles */
 .portal-sidebar {
-  width: 260px;
+  width: 240px;
   background-color: var(--bg-sidebar);
   color: #94a3b8;
   display: flex;
@@ -8,16 +28,48 @@
   min-height: 100vh;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
   transition: transform var(--transition-normal);
+  flex-shrink: 0;
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
   padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.brand-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.sidebar-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-close-btn:hover {
+  color: white;
+}
+
+.sidebar-close-btn svg {
+  display: block;
 }
 
 .brand-logo {
@@ -154,6 +206,7 @@
   position: sticky;
   top: 0;
   z-index: 90;
+  width: 100%;
 }
 
 .header-left {
@@ -173,6 +226,7 @@
 
 .header-greeting {
   font-size: 1.05rem;
+  white-space: nowrap;
 }
 
 .header-right {
@@ -212,26 +266,296 @@
   object-fit: cover;
 }
 
+/* Placeholder icon when no photo uploaded */
+.profile-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e2d40;
+}
+
+.user-icon-svg-sm {
+  width: 44px;
+  height: 44px;
+  color: #64748b;
+}
+
+.header-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+}
+
+.user-icon-svg-xs {
+  width: 22px;
+  height: 22px;
+  color: #94a3b8;
+}
+
+/* Large desktops and above */
+@media (min-width: 1600px) {
+  .portal-sidebar {
+    width: 260px;
+  }
+}
+
+/* Standard desktops and laptops */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .portal-sidebar {
+    width: 240px;
+  }
+}
+
+/* Smaller laptops */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .portal-sidebar {
+    width: 220px;
+  }
+
+  .sidebar-brand {
+    padding: 1.25rem;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .sidebar-profile {
+    padding: 1.25rem;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+
+  .nav-item {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .portal-header {
+    padding: 0 1.5rem;
+  }
+}
+
 /* Responsive sidebar */
 @media (max-width: 991px) {
+  /* Show backdrop on mobile */
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  /* Mobile sidebar becomes overlay so it won't affect layout width */
   .portal-sidebar {
     position: fixed;
     transform: translateX(-100%);
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+    max-width: 85vw;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
   }
+
   .portal-sidebar.open {
     transform: translateX(0);
   }
+
+  .sidebar-close-btn {
+    display: block;
+  }
+
   .sidebar-toggle-btn {
     display: block;
   }
+
   .portal-header {
-    padding: 0 1rem;
+    padding: 0 1.25rem;
+  }
+
+  /* Ensure content below header isn't hidden */
+  .portal-content {
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .main-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-sidebar {
+    max-width: 80vw;
+  }
+
+  .sidebar-brand {
+    padding: 1.25rem;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .sidebar-profile {
+    padding: 1.25rem;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+
+  .nav-item {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
   }
 }
 
 @media (max-width: 576px) {
   .header-academic-details {
     display: none;
+  }
+
+  .portal-header {
+    height: 60px;
+    padding: 0 0.75rem;
+  }
+
+  .header-greeting {
+    font-size: 0.9rem;
+  }
+
+  .header-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .portal-sidebar {
+    max-width: 80vw;
+  }
+
+  .sidebar-brand {
+    padding: 1rem;
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-name {
+    font-size: 0.95rem;
+  }
+
+  .brand-tag {
+    font-size: 0.7rem;
+  }
+
+  .sidebar-profile {
+    padding: 1rem;
+  }
+
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .profile-name {
+    font-size: 0.9rem;
+  }
+
+  .profile-matric {
+    font-size: 0.75rem;
+  }
+
+  .sidebar-nav {
+    padding: 1rem 0.5rem;
+  }
+
+  .nav-item {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .nav-icon {
+    font-size: 0.9rem;
+  }
+
+  .sidebar-close-btn {
+    right: 0.75rem;
+  }
+
+  .sidebar-close-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 400px) {
+  .portal-header {
+    height: 56px;
+    padding: 0 0.5rem;
+  }
+
+  .header-left {
+    gap: 0.75rem;
+  }
+
+  .header-greeting {
+    font-size: 0.85rem;
+  }
+
+  .header-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .sidebar-toggle-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .portal-sidebar {
+    max-width: 85vw;
+  }
+
+  .sidebar-close-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .portal-sidebar {
+    max-width: 90vw;
+  }
+
+  .sidebar-brand {
+    padding: 1rem 0.75rem;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .brand-name {
+    font-size: 0.9rem;
+  }
+
+  .sidebar-profile {
+    padding: 0.85rem;
   }
 }

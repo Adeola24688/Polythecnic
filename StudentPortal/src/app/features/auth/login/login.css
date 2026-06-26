@@ -75,7 +75,7 @@
 }
 
 .btn-click-here {
-  background-color: #ef4444;
+  background-color: green;
   color: white;
   border: none;
   padding: 0.35rem 0.75rem;
@@ -184,7 +184,7 @@
 
 .warning-note {
   font-size: 0.8rem;
-  color: #e11d48;
+  color: black;
   text-align: center;
   margin-top: 1.5rem;
   font-weight: 600;
@@ -198,7 +198,7 @@
 }
 
 .login-links a {
-  color: #ef4444;
+  color: green;
   text-decoration: none;
   font-weight: 600;
 }
@@ -208,16 +208,187 @@
 }
 
 /* Responsive */
-@media (max-width: 850px) {
+@media (max-width: 1024px) {
+  .info-sidebar {
+    width: 340px;
+    padding: 2.25rem 1.75rem;
+  }
+
+  .school-logo-lg img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .login-card {
+    padding: 2.25rem 1.75rem;
+  }
+}
+
+@media (max-width: 900px) {
   .login-wrapper {
     flex-direction: column-reverse;
   }
+
   .info-sidebar {
     width: 100%;
     box-shadow: none;
-    padding: 2rem;
+    padding: 2rem 1.5rem;
   }
+
   .form-container {
-    padding: 3rem 1.5rem;
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-sidebar {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .school-title {
+    font-size: 1.15rem;
+  }
+
+  .info-block {
+    padding: 0.9rem 1.1rem;
+    font-size: 0.82rem;
+  }
+
+  .info-block h3 {
+    font-size: 0.9rem;
+  }
+
+  .form-container {
+    padding: 2rem 1.25rem;
+  }
+
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .portal-title {
+    font-size: 1.3rem;
+  }
+
+  .portal-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .info-sidebar {
+    padding: 1.5rem 1rem;
+  }
+
+  .school-logo-lg img {
+    width: 65px;
+    height: 65px;
+  }
+
+  .school-title {
+    font-size: 1.1rem;
+  }
+
+  .school-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .info-block {
+    padding: 0.85rem 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .info-block h3 {
+    font-size: 0.85rem;
+  }
+
+  .btn-click-here {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.65rem;
+  }
+
+  .form-container {
+    padding: 1.75rem 1rem;
+  }
+
+  .login-card {
+    padding: 1.75rem 1.25rem;
+    max-width: 100%;
+  }
+
+  .card-logo img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .portal-title {
+    font-size: 1.2rem;
+  }
+
+  .portal-subtitle {
+    font-size: 0.82rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-size: 0.82rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .btn-block {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .login-links {
+    font-size: 0.82rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .warning-note {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .info-sidebar {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .school-logo-lg img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .school-title {
+    font-size: 1rem;
+  }
+
+  .info-block {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.78rem;
+  }
+
+  .form-container {
+    padding: 1.5rem 0.85rem;
+  }
+
+  .login-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .portal-title {
+    font-size: 1.1rem;
+  }
+
+  .card-logo img {
+    width: 55px;
+    height: 55px;
   }
 }

@@ -22,3 +22,42 @@
   justify-content: flex-end;
   margin-top: 1.5rem;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tips-list {
+    font-size: 0.9rem;
+    gap: 1rem;
+  }
+
+  .tips-list li {
+    padding-left: 0.4rem;
+    border-left-width: 2px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-tips {
+    padding: 1.25rem;
+  }
+
+  .tips-list {
+    font-size: 0.85rem;
+    gap: 0.85rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .tips-list {
+    font-size: 0.8rem;
+  }
+}

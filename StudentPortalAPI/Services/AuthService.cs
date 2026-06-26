@@ -111,6 +111,37 @@ public class AuthService
         return MapToDto(student);
     }
 
+    public async Task<StudentDto?> UploadProfilePhotoAsync(int studentId, IFormFile file)
+    {
+        var student = await _context.Students.FindAsync(studentId);
+        if (student == null) return null;
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(extension))
+            throw new InvalidOperationException("Only image files are allowed (.jpg, .jpeg, .png, .gif, .webp)");
+
+        if (file.Length > 5 * 1024 * 1024)
+            throw new InvalidOperationException("File size must be under 5MB");
+
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
+        Directory.CreateDirectory(uploadsFolder);
+
+        var fileName = $"{studentId}_{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        student.ProfilePhoto = $"/uploads/profiles/{fileName}";
+        student.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return MapToDto(student);
+    }
+
     private string GenerateJwtToken(Student student)
     {
         var jwtKey = _config["Jwt:Key"]

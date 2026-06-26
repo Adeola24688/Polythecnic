@@ -96,6 +96,10 @@ export interface Clearance {
   feesPaid: boolean;
   coursesRegistered: boolean;
   clearedAt?: string;
+  // Display fields (populated client-side for table view)
+  channel?: string;
+  level?: string;
+  sessionYear?: string;
 }
 
 export interface DashboardData {

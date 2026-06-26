@@ -1,0 +1,19 @@
+ CourseCode |           CourseTitle           | CreditUnit | Level |          Department           | Semester 
+------------+---------------------------------+------------+-------+-------------------------------+----------
+ COM111     | Introduction to Computing       |          3 | 100   | Computer Science              | First
+ COM112     | Introduction to Programming     |          3 | 100   | Computer Science              | First
+ MTH111     | Elementary Mathematics I        |          3 | 100   | Computer Science              | First
+ ENG111     | Use of English I                |          2 | 100   | Computer Science              | First
+ PHY111     | General Physics I               |          3 | 100   | Computer Science              | First
+ COM121     | Computer Hardware               |          3 | 100   | Computer Science              | Second
+ COM122     | BASIC Programming               |          3 | 100   | Computer Science              | Second
+ MTH121     | Elementary Mathematics II       |          3 | 100   | Computer Science              | Second
+ ENG121     | Use of English II               |          2 | 100   | Computer Science              | Second
+ STA121     | Introduction to Statistics      |          3 | 100   | Computer Science              | Second
+ SLT201     | Science Laboratory Technology I |          3 | 200   | Science Laboratory Technology | First
+ SLT202     | Analytical Chemistry I          |          3 | 200   | Science Laboratory Technology | First
+ SLT203     | Organic Chemistry I             |          3 | 200   | Science Laboratory Technology | First
+ SLT204     | Microbiology I                  |          3 | 200   | Science Laboratory Technology | First
+ SLT205     | Biochemistry I                  |          3 | 200   | Science Laboratory Technology | First
+(15 rows)
+
