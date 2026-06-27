@@ -45,7 +45,7 @@ dotnet publish -c Release
 Start command:
 
 ```bash
-dotnet StudentPortalAPI.dll
+dotnet out/StudentPortalAPI.dll
 ```
 
 Set these environment variables on the backend host:
