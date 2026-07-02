@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { StudentService } from '../../core/services/student.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Clearance } from '../../shared/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-clearance',
@@ -225,7 +226,7 @@ export class ClearanceComponent implements OnInit {
     const photoSrc = s.profilePhoto
       ? s.profilePhoto.startsWith('http')
         ? s.profilePhoto
-        : `http://localhost:5141${s.profilePhoto}`
+        : `${environment.baseUrl}${s.profilePhoto}`
       : '';
 
     const printWindow = window.open('', '_blank', 'width=900,height=700');

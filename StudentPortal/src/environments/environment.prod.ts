@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://polythecnic-production.up.railway.app/api',
-  baseUrl: 'https://polythecnic-production.up.railway.app',
+  apiBaseUrl: 'https://your-render-backend.onrender.com/api',
+  baseUrl: 'https://your-render-backend.onrender.com',
 };

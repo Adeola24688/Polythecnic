@@ -1,136 +1,144 @@
-# Student Portal Deployment Checklist
+# Student Portal Deployment Checklist (Netlify + Render + Supabase)
 
 This project has three deployable parts:
 
 - Frontend: Angular app in `StudentPortal`
 - Backend: ASP.NET Core API in `StudentPortalAPI`
-- Database: PostgreSQL
+- Database: Supabase Postgres
+- File storage: Supabase Storage
 
-## 1. Deploy the Database
+## 1. Create the Supabase project
 
-Create a PostgreSQL database with any host that supports external connections.
+Create a Supabase project and collect these values:
 
-Save the database connection details. The backend needs a connection string like:
+- Project URL
+- Postgres connection URI
+- Service role key
 
-```text
-Host=YOUR_DB_HOST;Port=5432;Database=YOUR_DB_NAME;Username=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;SSL Mode=Require;Trust Server Certificate=true
-```
+## 2. Create a public storage bucket for profile photos
 
-For local development, the app currently uses:
-
-```text
-Host=localhost;Database=StudentPortalDb;Username=postgres;Password=YOUR_LOCAL_PASSWORD
-```
-
-## 2. Deploy the Backend API
-
-Project folder:
-
-```bash
-StudentPortalAPI
-```
-
-Dockerfile:
+In Supabase Storage, create a bucket named:
 
 ```text
-StudentPortalAPI/Dockerfile
+profile-photos
 ```
 
-Build command:
+Make the bucket **public**.
 
-```bash
-dotnet publish -c Release
-```
-
-Start command:
-
-```bash
-dotnet out/StudentPortalAPI.dll
-```
-
-Set these environment variables on the backend host:
+If you want to use a different bucket name, set:
 
 ```text
-ConnectionStrings__DefaultConnection=Host=YOUR_DB_HOST;Port=5432;Database=YOUR_DB_NAME;Username=YOUR_DB_USER;Password=YOUR_DB_PASSWORD;SSL Mode=Require;Trust Server Certificate=true
+SUPABASE_STORAGE_BUCKET=your-bucket-name
+```
+
+## 3. Configure the backend database connection
+
+You can use either of these formats for the backend:
+
+### Option A: Supabase URI (recommended)
+
+```text
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@YOUR_HOST:5432/postgres?sslmode=require
+```
+
+### Option B: .NET/Npgsql connection string
+
+```text
+ConnectionStrings__DefaultConnection=Host=YOUR_HOST;Port=5432;Database=postgres;Username=postgres;Password=YOUR_PASSWORD;SSL Mode=Require
+```
+
+The backend supports both formats.
+
+## 4. Deploy the backend on Render
+
+Create a **Web Service** on Render from your GitHub repository.
+
+Use these settings:
+
+- Runtime: `Docker`
+- Root directory: `StudentPortalAPI`
+- Dockerfile path: `StudentPortalAPI/Dockerfile`
+- Service type: `Web Service`
+
+Set these environment variables on the backend service:
+
+```text
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@YOUR_HOST:5432/postgres?sslmode=require
+SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_STORAGE_BUCKET=profile-photos
 Jwt__Key=REPLACE_WITH_A_LONG_RANDOM_SECRET_KEY
 Jwt__Issuer=StudentPortalAPI
 Jwt__Audience=StudentPortalApp
-Cors__AllowedOrigins__0=https://YOUR_FRONTEND_DOMAIN
+Cors__AllowedOrigins__0=https://YOUR_NETLIFY_SITE_DOMAIN
 ```
 
-Production secrets are not stored in `appsettings.json`; the backend expects the database connection and JWT key from environment variables on the host.
+Notes:
+
+- Render provides the `PORT` environment variable automatically.
+- The API is already configured to bind to `PORT`.
+- EF Core migrations run automatically on backend startup.
+- Profile photo uploads now go to Supabase Storage instead of the container filesystem.
+- Production secrets are not stored in `appsettings.json`; they must be configured in Render.
 
 After deployment, test:
 
 ```text
-https://YOUR_BACKEND_DOMAIN/
-https://YOUR_BACKEND_DOMAIN/health
+https://YOUR_RENDER_BACKEND_DOMAIN/
+https://YOUR_RENDER_BACKEND_DOMAIN/health
 ```
 
-Note: Swagger is currently enabled only in development, so `/swagger` is for local testing unless you choose to enable it for production.
+Swagger is enabled only in development, so `/swagger` is mainly for local testing.
 
-## 3. Connect the Frontend to the Backend
+## 5. Deploy the frontend on Netlify
 
-Before deploying the frontend, update:
+Connect the repository to Netlify and deploy the `StudentPortal` app.
+
+Use these settings:
+
+- Base directory: `StudentPortal`
+- Build command: `npm run build`
+- Publish directory: `dist/StudentPortal/browser`
+
+Set these environment variables on Netlify:
 
 ```text
-StudentPortal/src/environments/environment.prod.ts
+PUBLIC_API_BASE_URL=https://YOUR_RENDER_BACKEND_DOMAIN/api
+PUBLIC_BASE_URL=https://YOUR_RENDER_BACKEND_DOMAIN
 ```
 
-Change:
+How it works:
 
-```ts
-apiBaseUrl: 'https://your-backend-url.com/api'
-```
+- Before every production build, `StudentPortal/scripts/set-production-env.mjs` generates `src/environments/environment.prod.ts`.
+- `PUBLIC_API_BASE_URL` is used for API requests.
+- `PUBLIC_BASE_URL` is used for any backend-hosted relative assets.
+- New profile photo uploads are stored as full Supabase public URLs, so the frontend can load them directly.
 
-To your real deployed backend URL:
-
-```ts
-apiBaseUrl: 'https://YOUR_BACKEND_DOMAIN/api'
-```
-
-This Angular project does not load `.env` files automatically, so the production API URL must be set in `environment.prod.ts` before building.
-
-## 4. Deploy the Frontend
-
-Project folder:
-
-```bash
-StudentPortal
-```
-
-Build command:
-
-```bash
-npm run build
-```
-
-Publish/output directory:
+After the frontend is deployed, make sure the backend service has:
 
 ```text
-dist/StudentPortal/browser
+Cors__AllowedOrigins__0=https://YOUR_NETLIFY_SITE_DOMAIN
 ```
 
-After deployment, add the frontend domain to the backend CORS environment variable:
+Then redeploy the backend if needed.
 
-```text
-Cors__AllowedOrigins__0=https://YOUR_FRONTEND_DOMAIN
-```
-
-## 5. Final Live Test
+## 6. Final live test
 
 Test these flows on the hosted frontend:
 
 - Register a student
 - Login
 - Update biodata
+- Upload a profile photo
 - Register courses
 - Make payment
 - Request clearance
 - View dashboard
+- Download ID card
+- Print clearance slip
 - Change password
 
-## Local Development URLs
+## Local development URLs
 
 ```text
 Frontend: http://localhost:4200

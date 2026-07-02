@@ -2,15 +2,16 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using StudentPortalAPI.Data;
 using StudentPortalAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var railwayPort = Environment.GetEnvironmentVariable("PORT");
-if (!string.IsNullOrWhiteSpace(railwayPort))
+var platformPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(platformPort))
 {
-    builder.WebHost.UseUrls($"http://0.0.0.0:{railwayPort}");
+    builder.WebHost.UseUrls($"http://0.0.0.0:{platformPort}");
 }
 
 // ─── Services ───
@@ -22,12 +23,15 @@ builder.Services.AddControllers()
 
 // PostgreSQL + EF Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+    ?? BuildPostgresConnectionString(builder.Configuration["DATABASE_URL"])
+    ?? throw new InvalidOperationException("Database connection is not configured. Set ConnectionStrings__DefaultConnection or DATABASE_URL.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Auth Service
+// Auth + external services
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<SupabaseStorageService>();
 builder.Services.AddScoped<AuthService>();
 
 // JWT Authentication
@@ -123,3 +127,46 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+static string? BuildPostgresConnectionString(string? databaseUrl)
+{
+    if (string.IsNullOrWhiteSpace(databaseUrl))
+    {
+        return null;
+    }
+
+    if (!databaseUrl.Contains("://", StringComparison.Ordinal))
+    {
+        return databaseUrl;
+    }
+
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':', 2, StringSplitOptions.None);
+
+    var connectionStringBuilder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port > 0 ? uri.Port : 5432,
+        Database = uri.AbsolutePath.Trim('/'),
+        Username = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : string.Empty,
+        Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty,
+        SslMode = SslMode.Require
+    };
+
+    foreach (var parameter in uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+    {
+        var parts = parameter.Split('=', 2, StringSplitOptions.None);
+        var key = Uri.UnescapeDataString(parts[0]);
+        var value = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+
+        try
+        {
+            connectionStringBuilder[key] = value;
+        }
+        catch (ArgumentException)
+        {
+        }
+    }
+
+    return connectionStringBuilder.ConnectionString;
+}

@@ -13,11 +13,13 @@ public class AuthService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
+    private readonly SupabaseStorageService _supabaseStorageService;
 
-    public AuthService(AppDbContext context, IConfiguration config)
+    public AuthService(AppDbContext context, IConfiguration config, SupabaseStorageService supabaseStorageService)
     {
         _context = context;
         _config = config;
+        _supabaseStorageService = supabaseStorageService;
     }
 
     public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
@@ -119,23 +121,12 @@ public class AuthService
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!allowedExtensions.Contains(extension))
-            throw new InvalidOperationException("Only image files are allowed (.jpg, .jpeg, .png, .gif, .webp)");
+            throw new ArgumentException("Only image files are allowed (.jpg, .jpeg, .png, .gif, .webp)");
 
         if (file.Length > 5 * 1024 * 1024)
-            throw new InvalidOperationException("File size must be under 5MB");
+            throw new ArgumentException("File size must be under 5MB");
 
-        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
-        Directory.CreateDirectory(uploadsFolder);
-
-        var fileName = $"{studentId}_{Guid.NewGuid()}{extension}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        student.ProfilePhoto = $"/uploads/profiles/{fileName}";
+        student.ProfilePhoto = await _supabaseStorageService.UploadProfilePhotoAsync(studentId, file);
         student.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { StudentService } from '../../core/services/student.service';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardData } from '../../shared/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +43,7 @@ export class DashboardComponent implements OnInit {
 
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
-      hash = ((hash << 5) - hash) + text.charCodeAt(i);
+      hash = (hash << 5) - hash + text.charCodeAt(i);
       hash |= 0;
     }
 
@@ -106,7 +107,9 @@ export class DashboardComponent implements OnInit {
     const fullName = `${s.lastName} ${s.firstName} ${s.middleName || ''}`.toUpperCase().trim();
     const faculty = s.faculty || 'Sciences';
     const sessionYear = s.session
-      ? s.session.toLowerCase().includes('session') ? s.session : `${s.session} Session`
+      ? s.session.toLowerCase().includes('session')
+        ? s.session
+        : `${s.session} Session`
       : '2025/2026 Session';
 
     const currentDate = new Date().toLocaleDateString('en-GB');
@@ -114,7 +117,7 @@ export class DashboardComponent implements OnInit {
     const photoSrc = s.profilePhoto
       ? s.profilePhoto.startsWith('http')
         ? s.profilePhoto
-        : `http://localhost:5141${s.profilePhoto}`
+        : `${environment.baseUrl}${s.profilePhoto}`
       : '';
 
     const qrText = `SAF-POLY-ID|${s.matricNumber}|${s.department}|${s.session}`;
