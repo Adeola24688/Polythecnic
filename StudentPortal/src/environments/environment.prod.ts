@@ -1,7 +1,7 @@
 const origin =
   typeof window !== 'undefined'
     ? window.location.origin
-    : 'https://your-render-backend.onrender.com';
+    : 'https://student-portal-api-y3dn.onrender.com';
 
 export const environment = {
   production: true,
