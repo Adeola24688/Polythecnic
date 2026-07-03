@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
+using System.Net;
 using StudentPortalAPI.Data;
 using StudentPortalAPI.Services;
 
@@ -145,7 +146,7 @@ static string? BuildPostgresConnectionString(string? databaseUrl)
 
     var connectionStringBuilder = new NpgsqlConnectionStringBuilder
     {
-        Host = uri.Host,
+        Host = ResolveIPv4Host(uri.Host),
         Port = uri.Port > 0 ? uri.Port : 5432,
         Database = uri.AbsolutePath.Trim('/'),
         Username = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : string.Empty,
@@ -169,4 +170,23 @@ static string? BuildPostgresConnectionString(string? databaseUrl)
     }
 
     return connectionStringBuilder.ConnectionString;
+}
+
+static string ResolveIPv4Host(string host)
+{
+    try
+    {
+        var addresses = Dns.GetHostAddresses(host);
+        var ipv4Address = addresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+        if (ipv4Address != null)
+        {
+            Console.WriteLine($"[DNS] Resolved {host} to IPv4: {ipv4Address}");
+            return ipv4Address.ToString();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DNS Warning] Failed to force IPv4 resolution for {host}: {ex.Message}");
+    }
+    return host;
 }
