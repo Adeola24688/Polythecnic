@@ -55,7 +55,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // CORS
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:4200", "http://localhost:4300" };
+    ?? Array.Empty<string>();
+allowedOrigins = allowedOrigins
+    .Where(origin => !string.IsNullOrWhiteSpace(origin))
+    .ToArray();
+
+if (allowedOrigins.Length == 0)
+{
+    allowedOrigins = new[]
+    {
+        "http://localhost:4200",
+        "http://localhost:4300",
+        "https://polytechnicport.netlify.app",
+        "https://student-portal-api-y3dn.onrender.com"
+    };
+}
 
 builder.Services.AddCors(options =>
 {
