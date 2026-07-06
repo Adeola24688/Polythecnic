@@ -3,19 +3,49 @@ import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 
 interface SponsorData {
-  name: string; relationship: string; phone: string; occupation: string; address: string;
+  name: string;
+  relationship: string;
+  phone: string;
+  occupation: string;
+  address: string;
 }
 interface ParentsData {
-  fatherName: string; fatherPhone: string; fatherOccupation: string;
-  motherName: string; motherPhone: string; motherOccupation: string;
+  fatherName: string;
+  fatherPhone: string;
+  fatherOccupation: string;
+  motherName: string;
+  motherPhone: string;
+  motherOccupation: string;
 }
 interface InstitutionData {
-  name: string; state: string; from: string; to: string; certificate: string;
+  name: string;
+  state: string;
+  from: string;
+  to: string;
+  certificate: string;
 }
-interface NdResultData { institution: string; grade: string; year: string; }
-interface OlevelSubject { subject: string; grade: string; }
-interface OlevelData { examType: string; year: string; regNumber: string; subjects: OlevelSubject[]; }
-interface JambData { regNumber: string; year: string; score: string; course: string; institution: string; }
+interface NdResultData {
+  institution: string;
+  grade: string;
+  year: string;
+}
+interface OlevelSubject {
+  subject: string;
+  grade: string;
+}
+interface OlevelData {
+  examType: string;
+  year: string;
+  regNumber: string;
+  subjects: OlevelSubject[];
+}
+interface JambData {
+  regNumber: string;
+  year: string;
+  score: string;
+  course: string;
+  institution: string;
+}
 
 const EMPTY_SUBJECTS = (): OlevelSubject[] =>
   Array.from({ length: 9 }, () => ({ subject: '', grade: '' }));
@@ -66,37 +96,110 @@ export class BiodataComponent implements OnInit {
   readonly submitting = signal(false);
 
   // Extra sections
-  readonly sponsorData = signal<SponsorData>({ name: '', relationship: '', phone: '', occupation: '', address: '' });
-  readonly sponsorForm = signal<SponsorData>({ name: '', relationship: '', phone: '', occupation: '', address: '' });
+  readonly sponsorData = signal<SponsorData>({
+    name: '',
+    relationship: '',
+    phone: '',
+    occupation: '',
+    address: '',
+  });
+  readonly sponsorForm = signal<SponsorData>({
+    name: '',
+    relationship: '',
+    phone: '',
+    occupation: '',
+    address: '',
+  });
 
-  readonly parentsData = signal<ParentsData>({ fatherName: '', fatherPhone: '', fatherOccupation: '', motherName: '', motherPhone: '', motherOccupation: '' });
-  readonly parentsForm = signal<ParentsData>({ fatherName: '', fatherPhone: '', fatherOccupation: '', motherName: '', motherPhone: '', motherOccupation: '' });
+  readonly parentsData = signal<ParentsData>({
+    fatherName: '',
+    fatherPhone: '',
+    fatherOccupation: '',
+    motherName: '',
+    motherPhone: '',
+    motherOccupation: '',
+  });
+  readonly parentsForm = signal<ParentsData>({
+    fatherName: '',
+    fatherPhone: '',
+    fatherOccupation: '',
+    motherName: '',
+    motherPhone: '',
+    motherOccupation: '',
+  });
 
-  readonly institutionData = signal<InstitutionData>({ name: '', state: '', from: '', to: '', certificate: '' });
-  readonly institutionForm = signal<InstitutionData>({ name: '', state: '', from: '', to: '', certificate: '' });
+  readonly institutionData = signal<InstitutionData>({
+    name: '',
+    state: '',
+    from: '',
+    to: '',
+    certificate: '',
+  });
+  readonly institutionForm = signal<InstitutionData>({
+    name: '',
+    state: '',
+    from: '',
+    to: '',
+    certificate: '',
+  });
 
   readonly ndData = signal<NdResultData>({ institution: '', grade: '', year: '' });
   readonly ndForm = signal<NdResultData>({ institution: '', grade: '', year: '' });
 
-  readonly olevelData = signal<OlevelData>({ examType: '', year: '', regNumber: '', subjects: EMPTY_SUBJECTS() });
-  readonly olevelForm = signal<OlevelData>({ examType: '', year: '', regNumber: '', subjects: EMPTY_SUBJECTS() });
+  readonly olevelData = signal<OlevelData>({
+    examType: '',
+    year: '',
+    regNumber: '',
+    subjects: EMPTY_SUBJECTS(),
+  });
+  readonly olevelForm = signal<OlevelData>({
+    examType: '',
+    year: '',
+    regNumber: '',
+    subjects: EMPTY_SUBJECTS(),
+  });
 
-  readonly jambData = signal<JambData>({ regNumber: '', year: '', score: '', course: '', institution: '' });
-  readonly jambForm = signal<JambData>({ regNumber: '', year: '', score: '', course: '', institution: '' });
+  readonly jambData = signal<JambData>({
+    regNumber: '',
+    year: '',
+    score: '',
+    course: '',
+    institution: '',
+  });
+  readonly jambForm = signal<JambData>({
+    regNumber: '',
+    year: '',
+    score: '',
+    course: '',
+    institution: '',
+  });
 
   ngOnInit(): void {
     this.loadStudentIntoForm();
     this.loadExtraData();
+
+    this.authService.refreshProfile().subscribe({
+      next: () => this.loadStudentIntoForm(),
+      error: () => {},
+    });
   }
 
   toggleSection(section: string): void {
     const current = new Set(this.openSections());
-    if (current.has(section)) { current.delete(section); } else { current.add(section); }
+    if (current.has(section)) {
+      current.delete(section);
+    } else {
+      current.add(section);
+    }
     this.openSections.set(current);
   }
 
-  isSectionOpen(section: string): boolean { return this.openSections().has(section); }
-  isEditing(section: string): boolean { return this.editingSection() === section; }
+  isSectionOpen(section: string): boolean {
+    return this.openSections().has(section);
+  }
+  isEditing(section: string): boolean {
+    return this.editingSection() === section;
+  }
 
   startEditing(section: string): void {
     this.editingSection.set(section);
@@ -110,7 +213,11 @@ export class BiodataComponent implements OnInit {
     if (section === 'parents') this.parentsForm.set({ ...this.parentsData() });
     if (section === 'institution') this.institutionForm.set({ ...this.institutionData() });
     if (section === 'nd') this.ndForm.set({ ...this.ndData() });
-    if (section === 'olevel') this.olevelForm.set({ ...this.olevelData(), subjects: this.olevelData().subjects.map(s => ({ ...s })) });
+    if (section === 'olevel')
+      this.olevelForm.set({
+        ...this.olevelData(),
+        subjects: this.olevelData().subjects.map((s) => ({ ...s })),
+      });
     if (section === 'jamb') this.jambForm.set({ ...this.jambData() });
   }
 
@@ -142,29 +249,68 @@ export class BiodataComponent implements OnInit {
     this.errorMessage.set(null);
     let dobValue: string | undefined;
     if (this.dob()) dobValue = new Date(this.dob()).toISOString();
-    this.authService.updateProfile({
-      phone: this.phone(), gender: this.gender(), dateOfBirth: dobValue,
-      stateOfOrigin: this.stateOfOrigin(), lga: this.lga(), address: this.address(),
-    }).subscribe({
-      next: () => {
-        this.submitting.set(false);
-        this.successMessage.set('Personal information saved successfully!');
-        this.editingSection.set(null);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      },
-      error: (err: any) => {
-        this.submitting.set(false);
-        this.errorMessage.set(err.error?.message || 'Failed to save details.');
-      },
-    });
+    this.authService
+      .updateProfile({
+        phone: this.phone(),
+        gender: this.gender(),
+        dateOfBirth: dobValue,
+        stateOfOrigin: this.stateOfOrigin(),
+        lga: this.lga(),
+        address: this.address(),
+      })
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.successMessage.set('Personal information saved successfully!');
+          this.editingSection.set(null);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (err: any) => {
+          this.submitting.set(false);
+          this.errorMessage.set(err.error?.message || 'Failed to save details.');
+        },
+      });
   }
 
-  saveSponsor(): void { this.sponsorData.set({ ...this.sponsorForm() }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set('Sponsor information saved!'); }
-  saveParents(): void { this.parentsData.set({ ...this.parentsForm() }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set('Parents/Guardian information saved!'); }
-  saveInstitution(): void { this.institutionData.set({ ...this.institutionForm() }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set('Institution information saved!'); }
-  saveNd(): void { this.ndData.set({ ...this.ndForm() }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set('ND Result saved!'); }
-  saveOlevel(): void { this.olevelData.set({ ...this.olevelForm(), subjects: this.olevelForm().subjects.map(s => ({ ...s })) }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set("O'Level result saved!"); }
-  saveJamb(): void { this.jambData.set({ ...this.jambForm() }); this.saveExtraData(); this.editingSection.set(null); this.successMessage.set('JAMB information saved!'); }
+  saveSponsor(): void {
+    this.sponsorData.set({ ...this.sponsorForm() });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set('Sponsor information saved!');
+  }
+  saveParents(): void {
+    this.parentsData.set({ ...this.parentsForm() });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set('Parents/Guardian information saved!');
+  }
+  saveInstitution(): void {
+    this.institutionData.set({ ...this.institutionForm() });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set('Institution information saved!');
+  }
+  saveNd(): void {
+    this.ndData.set({ ...this.ndForm() });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set('ND Result saved!');
+  }
+  saveOlevel(): void {
+    this.olevelData.set({
+      ...this.olevelForm(),
+      subjects: this.olevelForm().subjects.map((s) => ({ ...s })),
+    });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set("O'Level result saved!");
+  }
+  saveJamb(): void {
+    this.jambData.set({ ...this.jambForm() });
+    this.saveExtraData();
+    this.editingSection.set(null);
+    this.successMessage.set('JAMB information saved!');
+  }
 
   updateOlevelSubject(index: number, field: 'subject' | 'grade', value: string): void {
     const subjects = [...this.olevelForm().subjects];
@@ -173,17 +319,25 @@ export class BiodataComponent implements OnInit {
   }
 
   hasData(data: Record<string, any>): boolean {
-    return Object.values(data).some(v => typeof v === 'string' && v.trim().length > 0);
+    return Object.values(data).some((v) => typeof v === 'string' && v.trim().length > 0);
   }
 
-  private storageKey(): string { return `biodata_extra_${this.student()?.id || 'unknown'}`; }
+  private storageKey(): string {
+    return `biodata_extra_${this.student()?.id || 'unknown'}`;
+  }
 
   private saveExtraData(): void {
-    localStorage.setItem(this.storageKey(), JSON.stringify({
-      sponsor: this.sponsorData(), parents: this.parentsData(),
-      institution: this.institutionData(), ndResult: this.ndData(),
-      olevel: this.olevelData(), jamb: this.jambData(),
-    }));
+    localStorage.setItem(
+      this.storageKey(),
+      JSON.stringify({
+        sponsor: this.sponsorData(),
+        parents: this.parentsData(),
+        institution: this.institutionData(),
+        ndResult: this.ndData(),
+        olevel: this.olevelData(),
+        jamb: this.jambData(),
+      }),
+    );
   }
 
   private loadExtraData(): void {
@@ -197,7 +351,9 @@ export class BiodataComponent implements OnInit {
       if (data.ndResult) this.ndData.set(data.ndResult);
       if (data.olevel) this.olevelData.set(data.olevel);
       if (data.jamb) this.jambData.set(data.jamb);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   private loadStudentIntoForm(): void {
