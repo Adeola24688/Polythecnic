@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using System.Net;
@@ -123,6 +124,35 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAngular");
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Unhandled request failed.");
+
+        if (!context.Response.HasStarted)
+        {
+            var isDatabaseFailure = ex is RetryLimitExceededException
+                || ex is NpgsqlException
+                || ex.InnerException is NpgsqlException;
+
+            context.Response.Clear();
+            context.Response.StatusCode = isDatabaseFailure
+                ? StatusCodes.Status503ServiceUnavailable
+                : StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                message = isDatabaseFailure
+                    ? "The database is temporarily unavailable. Please try again shortly."
+                    : "The server could not complete the request. Please try again shortly."
+            });
+        }
+    }
+});
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
