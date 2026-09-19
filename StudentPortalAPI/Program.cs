@@ -113,6 +113,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+app.Logger.LogInformation("Allowed CORS origins: {Origins}", string.Join(", ", allowedOrigins));
 
 // ─── Middleware Pipeline ───
 if (app.Environment.IsDevelopment())
@@ -131,14 +132,35 @@ app.MapGet("/", () => Results.Ok(new
     status = "Running",
     swagger = app.Environment.IsDevelopment() ? "/swagger" : null
 }));
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy" }));
+app.MapGet("/health/live", () => Results.Ok(new { status = "Live" }));
+app.MapGet("/health", async (AppDbContext db) =>
+{
+    try
+    {
+        var canConnect = await db.Database.CanConnectAsync();
+        return canConnect
+            ? Results.Ok(new { status = "Healthy", database = "Connected" })
+            : Results.Json(new { status = "Unhealthy", database = "Unavailable" }, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Database health check failed.");
+        return Results.Json(new { status = "Unhealthy", database = "Unavailable" }, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+});
 app.MapControllers();
 
 // Auto-migrate database on startup
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+    app.Logger.LogInformation("Database migrations applied successfully.");
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Database migration failed during startup. The API will keep running, but database-backed endpoints may fail until the database is reachable.");
 }
 
 app.Run();

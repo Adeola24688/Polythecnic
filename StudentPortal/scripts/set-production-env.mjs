@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs';
 
-const rawApiBaseUrl = process.env.PUBLIC_API_BASE_URL?.trim() || 'https://your-render-backend.onrender.com/api';
+const fallbackApiBaseUrl = 'https://student-portal-api-y3dn.onrender.com/api';
+const rawApiBaseUrl = process.env.PUBLIC_API_BASE_URL?.trim() || fallbackApiBaseUrl;
 const apiBaseUrl = rawApiBaseUrl.replace(/\/+$/, '');
 
 const rawBaseUrl = process.env.PUBLIC_BASE_URL?.trim() || apiBaseUrl.replace(/\/api$/, '');
